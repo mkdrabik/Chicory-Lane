@@ -9,7 +9,7 @@ const heading = document.createElement("h1");
 heading.textContent = "Hello";
 
 const button = document.createElement("button");
-button.textContent = "Ce";
+button.textContent = "Click me";
 
 // Add click event
 button.addEventListener("click", () => {
