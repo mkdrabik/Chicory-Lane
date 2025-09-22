@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+
+<html>
+
+
+
+<head>
+
+<meta http-equiv="Content-Type"
+
+content="text/html; charset=iso-8859-1">
+
+<meta name="GENERATOR" content="Microsoft FrontPage 6.0">
+<LINK href="/theme/Master.css" rel="stylesheet"
+	type="text/css"/>
+
+<title>left for development</title>
+
+<base target="_self">
+
+</head>
+
+
+
+<body bgcolor="#AABBFF" text="#000088" link="#000088" vlink="#000088">
+<!--body bgcolor="#AABBFF" -->
+
+<div class="menuVertical" >
+<ul>
+<li><a> </a></li>
+<li><a> </a></li>
+<li>Go to:</li>
+<li><a> </a></li>
+<li><a> </a></li>
+<li><a href="/pages/welcome.html" target="main">Welcome</a></li>
+<li><a> </a></li>
+<li><a href="/areas/areasOutline.html" target="main">Areas</a></li>
+<li><a href="/maps/mapsWelcome.html" target="main">Maps</a></li>
+<li><a href="/gallery/galleryWelcome.html" target="main">Gallery</a></li>
+<li><a href="/plantlists/plantLists.html" target="main">PlantLists</a></li>
+<li><a href="http://bld08-cs.cs.unc.edu/database/scripts/php/control/ControlSwitch.php?target=dbWelcome" target="main">DatabaseDev</a></li>
+<li><a href="/events/eventsWelcome.html" target="main">Events</a></li>
+<li><a href="/awards/awardsWelcome.html" target="main">Awards</a></li>
+<li><a href="/history/history.html" target="main">History</a></li>
+<li><a> </a></li>
+<li><a href="mailto:webmaster@chicorylane.com">Webmaster</a></li>
+
+</ul>
+<br style="clear:left"/>
+</div>
+
+
+
+</body>
+
+</html>
+

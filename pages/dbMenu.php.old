@@ -1,0 +1,72 @@
+<div class="menuHorizontal" >
+
+<ul>
+
+<?php 
+include_once ("/database/scripts/php/util/ConstantsDb.php");
+
+$role = $_SESSION["role"];
+
+// role admin
+if ($role >= ROLEADMIN)  {
+	echo "
+	<li>Admin<br>DataBase
+	<ul>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbUserAdmin' target='main'>Users</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbLocationAdmin' target='main'>Locations</a></li>
+	</ul>
+	</li>
+";
+}
+
+//  role contributor
+if ($role >= ROLECONTRIBUTOR)  {
+	echo "
+	<li>Admin<br>Data
+	<ul>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbPlantAdmin' target='main'>Plants</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbPlantAndLocAdmin' target='main'>Plant Locations</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbPlantAndObsAdmin' target='main'>Plant Observations</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbBirdAdmin' target='main'>Birds</a></li>
+	</ul>
+	</li>
+";
+}
+	
+
+//  role registered
+if ($role >= ROLEREGISTERED)  {
+	echo "
+	<li>Search<br>Data
+	<ul>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbPlantSearch' target='main'>Plants</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbPlantLocSearch' target='main'>Plant Locations</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbBirdSearch' target='main'>Birds</a></li>
+	</ul>
+	</li>
+	<li>View<br>Maps
+	<ul>
+	<li><a href='/database/gis/mapFarmAreas.html' target='main'>Farm Areas</a></li>
+	</ul>
+	</li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbLogout' target='main'>Logout</a></li>
+";
+}
+	
+//  role guest/public
+if ($role == ROLEGUEST)  {
+	echo "
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbPlantSearch' target='main'>Search<br>Plants</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbBirdSearch' target='main'>Search<br>Birds</a></li>
+	<li><a href='/database/scripts/php/control/ControlSwitch.php?target=dbWelcomeForce' target='main'>Login or<br>Register</a></li>
+";
+}
+
+?>
+	
+</ul>
+
+<br style="clear:left"/>
+
+</div>
+

@@ -1,0 +1,20 @@
+
+RewriteEngine On
+
+# lat before lng in query string
+RewriteCond "%{REQUEST_URI}"  "/ebird"
+RewriteCond "%{QUERY_STRING}" "lat=(-?[0-9]*[\.][0-9]*)(.*)lng=(-?[0-9]*[\.][0-9]*)$" 
+
+RewriteRule "^(.*)$"  "/database/scripts/php/control/ControlSwitch.php?target=eBirdWelcome&lat=%1&lng=%3"  [R=302,L]
+
+
+# null query string
+RewriteCond "%{REQUEST_URI}"  "^/ebird$"
+#RewriteCond "%{QUERY_STRING}" "^$"
+
+RewriteRule "^(.*)$"  "/database/scripts/php/control/ControlSwitch.php?target=eBirdWelcome" [R=302,L]
+
+
+
+#  	test:  Old Main 	lag/lng:	40.796465	-77.862743
+#	test:  ChicoryLane	lat/lng:	40.876198	-77.547179	

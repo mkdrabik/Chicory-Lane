@@ -1,0 +1,23 @@
+Value,Description,Label
+Canals,Major,1. Major
+Culvert,Major,1. Major
+Ditches,Major,1. Major
+Other Rivers and Streams,Major,1. Major
+Priority Habitat,Major,1. Major
+Canals,Moderate,2. Moderate
+Culvert,Moderate,2. Moderate
+Ditches,Moderate,2. Moderate
+Other Rivers and Streams,Moderate,2. Moderate
+Priority Habitat,Moderate,2. Moderate
+Canals,Minor,3. Minor
+Culvert,Minor,3. Minor
+Ditches,Minor,3. Minor
+Other Rivers and Streams,Minor,3. Minor
+Priority Habitat,Minor,3. Minor
+Canals,No Encroachment,4. No Encroachment
+Culvert,No Encroachment,4. No Encroachment
+Ditches,No Encroachment,4. No Encroachment
+Other Rivers and Streams,No Encroachment,4. No Encroachment
+Priority Habitat,No Encroachment,4. No Encroachment
+To be created,N/A,5. N/A
+N/A,N/A,5. N/A

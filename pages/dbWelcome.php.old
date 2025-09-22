@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+
+<html>
+
+
+
+<head>
+
+<meta http-equiv="Content-Type"
+
+content="text/html; charset=iso-8859-1">
+
+<meta name="GENERATOR" content="Microsoft FrontPage 6.0">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<LINK href="/database/theme/Master.css" rel="stylesheet"
+	type="text/css">
+<title>database welcome</title>
+
+</head>
+
+
+
+<body>
+
+
+
+<h1 align="center"><font color="#AA0000"><br>
+Welcome to</font></h1>
+
+
+
+<h1 align="center">ChicoryLane DataBase<br>
+&nbsp;</h1>
+
+<blockquote>
+<p>The ChicoryLane database is under construction.&nbsp; Some  
+function is currently available, but data may be incomplete and function may fail during periods of development.</p>
+<h3><a href="/database/scripts/php/control/ControlSwitch.php?target=dbGuest">
+Guest Access</a></h3>
+<blockquote>
+	<p>You may view and search basic plant lists as a <i>guest</i>.&nbsp; These 
+	data include common and botanical names of plants identified on ChicoryLane 
+	Farm.&nbsp; Additional function is available to <i>registered users.</i></p>
+</blockquote>
+<h3><a href="/database/scripts/php/control/ControlSwitch.php?target=dbRegister">
+Register</a></h3>
+<blockquote>
+	<p>Registered users may also view and search the plants database to identify 
+	areas and plant communities where plant types have been observed.&nbsp; If 
+	you would like access to these data, please register.</p>
+</blockquote>
+<h3><a href="/database/scripts/php/control/ControlSwitch.php?target=dbLogin">
+Login</a></h3>
+<blockquote>
+	<p>If&nbsp; you have already registered, please login.</p>
+</blockquote>
+<p>&nbsp;</p>
+	<hr>
+<p><i>September 21, 2011, 2011<br></i><a href="http://www.chicorylane.com/"><i>
+http://www.chicorylane.com/</i></a></p>
+</blockquote>
+
+
+
+</body>
+
+</html>
+

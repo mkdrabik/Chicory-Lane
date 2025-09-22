@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 6.0">
+<LINK href="/theme/Master.css" rel="stylesheet" type="text/css">
+<title>template slideshow</title>
+
+<script type="text/javascript" src="/scripts/slideshow.head.js"></script>
+
+</head>
+
+
+<body>
+
+<script type="text/javascript" src="/scripts/slideshow.body.js"></script>
+
+<!--  list images here  -->
+<script type="text/javascript">
+imageList[0]="images/124-2420_IMG.JPG"
+imageList[1]="images/124-2402_IMG.JPG"
+imageList[2]="images/124-2411_IMG.JPG"
+imageList[3]="images/124-2404_IMG.JPG"
+</script>
+
+<h1 align="center">Page Title</h1>
+
+<center>
+      
+<table border="0" cellpadding="0">
+  <tr>
+  
+    <td width="5%" align="left"> 
+    <input type="image" src="/scripts/icons/first.png" name="B2" onClick="iconFirst()"></input>
+    </td>
+
+    <td width="5%" align="right"> 
+    <input type="image" src="/scripts/icons/previous.png" name="B2" onClick="iconPrevious()"></input>
+    </td>
+
+    
+    <td width="80%" align="center"><img src="images/124-2420_IMG.JPG" name="slide"></td>
+    
+    <td width="5%" align="left">
+    <input type="image" src="/scripts/icons/next.png" name="B1" onClick="iconNext()"></input>
+    </td>
+
+    <td width="5%" align="right">
+    <input type="image" src="/scripts/icons/last.png" name="B2" onClick="iconLast()"></input>
+    </td>
+    
+  </tr>
+</table>
+
+<a href="javascript:void(0)" onClick="autoDisplayStart()"><h3>Start AutoDisplay</h3></a></p>
+
+</center>
+
+<hr>
+
+<p><i>July  14, 2011<br>
+
+</i><a href="http://www.chicorylane.com/"><i>http://www.chicorylane.com/</i></a></p>
+
+</body>
+
+</html>
+
+
+

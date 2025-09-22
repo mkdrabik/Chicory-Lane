@@ -1,0 +1,17 @@
+Category,Condition,Label
+Created,Fairly Good,2. Fairly Good
+Created,Fairly Poor,4. Fairly Poor
+Created,Good,1. Good
+Created,Moderate,3. Moderate
+Created,Poor,5. Poor
+Enhanced,Fairly Good,2. Fairly Good
+Enhanced,Fairly Poor,4. Fairly Poor
+Enhanced,Good,1. Good
+Enhanced,Moderate,3. Moderate
+Enhanced,Poor,5. Poor
+Lost,N/A,N/A
+Retained,Fairly Good,2. Fairly Good
+Retained,Fairly Poor,4. Fairly Poor
+Retained,Good,1. Good
+Retained,Moderate,3. Moderate
+Retained,Poor,5. Poor
