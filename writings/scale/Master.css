@@ -1,0 +1,171 @@
+BODY
+{
+    BACKGROUND-COLOR: #EDF0FF;
+    COLOR: #333366;
+    FONT-FAMILY: 'Times New Roman'
+}
+
+H1
+{
+    COLOR: #880000;
+    FONT-FAMILY: 'Times New Roman';
+    TEXT-TRANSFORM: capitalize
+}
+
+H2
+{
+    COLOR: #880000;
+    FONT-FAMILY: 'Times New Roman';
+    TEXT-TRANSFORM: capitalize
+}
+
+H3
+{
+    COLOR: #000088;
+    FONT-FAMILY: 'Times New Roman';
+    TEXT-TRANSFORM: none
+}
+
+H4
+{
+    COLOR: #000088;
+    FONT-FAMILY: 'Times New Roman';
+}
+
+H5
+{
+    COLOR: #000088;
+    FONT-FAMILY: 'Times New Roman';
+    TEXT-TRANSFORM: capitalize
+}
+
+H6
+{
+    COLOR: #000088;
+    FONT-FAMILY: 'Times New Roman';
+    TEXT-TRANSFORM: capitalize
+}
+
+TH {
+ color: #6060cc
+}
+
+
+/*  *****  Horizontal Menu  ***** */
+
+/*  first level  */
+
+.menuHorizontal {
+    width: 150%;
+    background-color: #AABBFF; 
+    margin: -8px -20px -10px -10px;
+    }
+
+.menuHorizontal ul {
+    margin: 0px; 
+    padding: 0px;
+    float: left;
+    }
+ 
+.menuHorizontal ul li {
+    display: inline;
+    float: left;     
+    position:relative;
+	text-align:center;
+    color: #000088;
+    background-color: #AABBFF; 
+    font-weight:  bold;
+    padding: 5px 10px 5px 10px; 
+	}
+ 
+.menuHorizontal ul li a {
+    float: left;
+    text-decoration: none;
+    color: #000088;
+    background-color: #AABBFF; 
+    font-weight:  bold;
+    }
+ 
+.menuHorizontal ul li a:visited {
+ 	}
+ 
+.menuHorizontal ul li a:hover, .menu ul li .current{
+    color: #fff;
+    background-color:#0b75b2;
+    }
+    
+/*  second level  */
+
+.menuHorizontal ul ul {
+	display:none;
+	position: absolute;
+	top: 48px;
+	left:0;
+	float:left;
+	width: 180px;
+	z-index:99999;
+ 	}
+ 
+.menuHorizontal ul ul li {
+	min-width:130px;
+	text-align: left;
+	}
+	
+.menuHorizontal ul ul a {
+    text-decoration: none;
+    color: #000088;
+    background-color: #AABBFF; 
+    font-weight:  bold;
+    /*padding: 5px 8px; */
+	}
+
+.menuHorizontal ul li:hover > ul {
+	display:inline;
+	}
+
+.menuHorizontal ul li:hover > a,
+.menuHorizontal ul ul:hover > a, {
+    color: #fff;
+    background-color:#0b75b2;
+	}
+ 
+ 
+ 
+   
+/*  *****  Vertical Menu  ***** */
+
+
+
+
+  
+.menuVertical{
+//    width: 100%;
+    width: 130px;
+    height: 100%;
+    background-color: #AABBFF; }
+
+.menuVertical ul{
+    margin: 0; padding: 0;
+    float: left;}
+ 
+.menuVertical ul li{
+    display: table;
+    font-weight:  bold;
+    padding: 0px 5px; }
+ 
+.menuVertical ul li a{
+    float: left;
+    text-decoration: none;
+    list-style: none;
+    color: #000088;
+    font-weight:  bold;
+    padding: 2px 15px;
+    background-color: #AABBFF; }
+ 
+.menuVertical ul li a:visited{
+    }
+ 
+.menuVertical ul li a:hover, .menu ul li .current{
+    color: #fff;
+    background-color:#0b75b2;}
+    
