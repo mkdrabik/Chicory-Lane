@@ -5,23 +5,23 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
 load_dotenv()
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+# client = OpenAI(api_key=os.environ["OPENAI_API_KEY2"])
 
-response = client.responses.create(
-    model="gpt-4.1-mini",
-    input="Write a one-sentence bedtime story about a unicorn."
-)
-
-print(response.output_text)
-
-# # 🔑 Clients
-# client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-# qdrant = QdrantClient(
-#     url=os.environ["QDRANT_URL"],
-#     api_key=os.environ["QDRANT_API_KEY"]
+# response = client.responses.create(
+#     model="gpt-4.1-mini",
+#     input="Write a one-sentence bedtime story about a unicorn."
 # )
 
-# COLLECTION_NAME = "documents"
+# print(response.output_text)
+
+# # 🔑 Clients
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+qdrant = QdrantClient(
+    url=os.environ["QDRANT_URL"],
+    api_key=os.environ["QDRANT_API_KEY"]
+)
+
+COLLECTION_NAME = "documents"
 
 # # 1️⃣ Create Qdrant collection (only once)
 # qdrant.recreate_collection(
@@ -31,9 +31,9 @@ print(response.output_text)
 
 # # 2️⃣ Ingest sample documents
 # docs = [
-#     {"id": "doc1", "text": "Qdrant is an open-source vector database designed for fast similarity search."},
-#     {"id": "doc2", "text": "Retrieval-Augmented Generation (RAG) improves LLM responses using external context."},
-#     {"id": "doc3", "text": "OpenAI provides embeddings models such as text-embedding-3-small and text-embedding-3-large."}
+#     {"id": 1, "text": "Qdrant is an open-source vector database designed for fast similarity search."},
+#     {"id": 2, "text": "Retrieval-Augmented Generation (RAG) improves LLM responses using external context."},
+#     {"id": 3, "text": "OpenAI provides embeddings models such as text-embedding-3-small and text-embedding-3-large."}
 # ]
 
 # vectors, payloads, ids = [], [], []
@@ -55,28 +55,28 @@ print(response.output_text)
 # print("✅ Documents inserted into Qdrant")
 
 # # 3️⃣ Query flow
-# query = "What is Qdrant?"
-# query_emb = client.embeddings.create(
-#     model="text-embedding-3-small",
-#     input=query
-# ).data[0].embedding
+query = "What is Qdrant?"
+query_emb = client.embeddings.create(
+    model="text-embedding-3-small",
+    input=query
+).data[0].embedding
 
-# search_result = qdrant.search(
-#     collection_name=COLLECTION_NAME,
-#     query_vector=query_emb,
-#     limit=3
-# )
+search_result = qdrant.search(
+    collection_name=COLLECTION_NAME,
+    query_vector=query_emb,
+    limit=3
+)
 
-# context = "\n".join([hit.payload["text"] for hit in search_result])
-# print("🔍 Retrieved context:\n", context)
+context = "\n".join([hit.payload["text"] for hit in search_result])
+print("🔍 Retrieved context:\n", context)
 
-# # 4️⃣ Ask ChatGPT with context
-# chat_response = client.chat.completions.create(
-#     model="gpt-4.1-mini",  # cheaper + fast, use gpt-4.1 for higher quality
-#     messages=[
-#         {"role": "system", "content": "You are a helpful assistant. Use the provided context to answer."},
-#         {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
-#     ]
-# )
+# 4️⃣ Ask ChatGPT with context
+chat_response = client.chat.completions.create(
+    model="gpt-4.1-mini",  # cheaper + fast, use gpt-4.1 for higher quality
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant. Use the provided context to answer."},
+        {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+    ]
+)
 
-# print("\n💡 ChatGPT Answer:\n", chat_response.choices[0].message.content)
+print("\n💡 ChatGPT Answer:\n", chat_response.choices[0].message.content)
