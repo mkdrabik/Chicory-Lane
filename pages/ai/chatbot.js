@@ -1,21 +1,41 @@
-// Create HTML structure using JavaScript
-document.documentElement.lang = "en";
+const messagesDiv = document.getElementById("messages");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
 
-// Head section
-document.title = "Hello";
+function addMessage(text, sender) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
+  msg.textContent = text;
+  messagesDiv.appendChild(msg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
 
-// Body content
-const heading = document.createElement("h1");
-heading.textContent = "Hello";
+async function sendMessage() {
+  const text = userInput.value.trim();
+  if (!text) return;
 
-const button = document.createElement("button");
-button.textContent = "Click me";
+  // Show user message
+  addMessage(text, "user");
+  userInput.value = "";
 
-// Add click event
-button.addEventListener("click", () => {
-  console.log("hello");
+  // Dummy API call (replace later)
+  const response = await getBotResponse(text);
+
+  // Show bot response
+  addMessage(response, "bot");
+}
+
+// Replace with your real API call later
+async function getBotResponse(userText) {
+  return `Hello, you said: "${userText}"`;
+}
+
+// Event listeners
+sendBtn.addEventListener("click", sendMessage);
+
+// Allow pressing Enter to send
+userInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    sendMessage();
+  }
 });
-
-// Append to body
-document.body.appendChild(heading);
-document.body.appendChild(button);
