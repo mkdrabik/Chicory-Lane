@@ -43,7 +43,7 @@ userInput.addEventListener("keypress", (e) => {
 // Call your backend FastAPI endpoint
 async function getBotResponse(userText) {
   try {
-    const response = await fetch("https://your-backend-url.onrender.com/ask", {
+    const response = await fetch("https://chicory-lane.onrender.com/ask", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
