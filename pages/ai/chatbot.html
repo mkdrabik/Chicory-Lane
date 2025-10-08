@@ -10,7 +10,7 @@
     <div class="menuHorizontal">
       <ul>
         <li><a href="../../index.html">Home</a></li>
-        <li><a href="../../conservation.html">Conservation</a></li>
+        <li><a href="../../../conservation.html">Conservation</a></li>
         <li><a href="../../resources.html">Resources</a></li>
         <li><a href="chatbot.html" class="current">Chatbot</a></li>
       </ul>
@@ -23,6 +23,10 @@
 
     <div class="chat-container">
       <div class="messages" id="messages"></div>
+
+      <!-- 👇 Added loading div here -->
+      <div id="loading" class="loading"></div>
+
       <div class="input-container">
         <input type="text" id="userInput" placeholder="Type your message here..." />
         <button id="sendBtn">Send</button>
