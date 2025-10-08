@@ -22,18 +22,17 @@ qdrant = QdrantClient(
 )
 
 COLLECTION_NAME = "documents"
+COLLECTION_NAME2 = "chicorylane"
 
-# # 1️⃣ Create Qdrant collection (only once)
+# 1️⃣ Create Qdrant collection (only once)
 # qdrant.recreate_collection(
-#     collection_name=COLLECTION_NAME,
+#     collection_name=COLLECTION_NAME2,
 #     vectors_config=models.VectorParams(size=1536, distance=models.Distance.COSINE),
 # )
 
-# # 2️⃣ Ingest sample documents
+# 2️⃣ Ingest sample documents
 # docs = [
-#     {"id": 1, "text": "Qdrant is an open-source vector database designed for fast similarity search."},
-#     {"id": 2, "text": "Retrieval-Augmented Generation (RAG) improves LLM responses using external context."},
-#     {"id": 3, "text": "OpenAI provides embeddings models such as text-embedding-3-small and text-embedding-3-large."}
+#     {"id": "1", "text": "Qdrant is an open-source vector database designed to handle large-scale vector embeddings for machine learning applications."},
 # ]
 
 # vectors, payloads, ids = [], [], []
@@ -48,21 +47,21 @@ COLLECTION_NAME = "documents"
 #     ids.append(d["id"])
 
 # qdrant.upsert(
-#     collection_name=COLLECTION_NAME,
+#     collection_name=COLLECTION_NAME2,
 #     points=models.Batch(ids=ids, vectors=vectors, payloads=payloads)
 # )
 
 # print("✅ Documents inserted into Qdrant")
 
 # # 3️⃣ Query flow
-query = "What is Qdrant?"
+query = "What are vernal pools?"
 query_emb = client.embeddings.create(
     model="text-embedding-3-small",
     input=query
 ).data[0].embedding
 
 search_result = qdrant.search(
-    collection_name=COLLECTION_NAME,
+    collection_name=COLLECTION_NAME2,
     query_vector=query_emb,
     limit=3
 )
