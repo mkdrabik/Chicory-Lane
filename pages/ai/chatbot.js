@@ -1,6 +1,7 @@
 const messagesDiv = document.getElementById("messages");
 const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
+const loadingDiv = document.getElementById("loading"); // 👈 grab the new element
 
 function addMessage(text, sender) {
   const msg = document.createElement("div");
@@ -13,42 +14,31 @@ function addMessage(text, sender) {
 async function sendMessage() {
   const text = userInput.value.trim();
   if (!text) return;
-
-  // Show user message
+  loadingDiv.textContent = " Thinking...";
   addMessage(text, "user");
   userInput.value = "";
-
-  // Dummy API call (replace later)
   const response = await getBotResponse(text);
-
-  // Show bot response
   addMessage(response, "bot");
+  loadingDiv.textContent = "";
 }
 
-// Replace with your real API call later
-async function getBotResponse(userText) {
-  return `Hello, you said: "${userText}"`;
-}
-
-// Event listeners
 sendBtn.addEventListener("click", sendMessage);
 
-// Allow pressing Enter to send
 userInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     sendMessage();
   }
 });
 
-// Call your backend FastAPI endpoint
 async function getBotResponse(userText) {
   try {
+    loading = true;
     const response = await fetch("https://chicory-lane.onrender.com/ask", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ query: userText }), // must match AskRequest
+      body: JSON.stringify({ query: userText }),
     });
 
     if (!response.ok) {
@@ -56,6 +46,7 @@ async function getBotResponse(userText) {
     }
 
     const data = await response.json();
+
     return data.answer;
   } catch (error) {
     console.error("Error calling backend:", error);
