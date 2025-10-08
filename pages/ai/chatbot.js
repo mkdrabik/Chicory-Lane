@@ -14,28 +14,19 @@ async function sendMessage() {
   const text = userInput.value.trim();
   if (!text) return;
 
-  // Show user message
   addMessage(text, "user");
   userInput.value = "";
 
-  // Dummy API call (replace later)
   const response = await getBotResponse(text);
-
-  // Show bot response
   addMessage(response, "bot");
 }
 
-// Replace with your real API call later
+// Dummy bot response
 async function getBotResponse(userText) {
-  return `Hello, you said: "${userText}"`;
+  return `🌿 The Chicory Lane chatbot heard: "${userText}"`;
 }
 
-// Event listeners
 sendBtn.addEventListener("click", sendMessage);
-
-// Allow pressing Enter to send
 userInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    sendMessage();
-  }
+  if (e.key === "Enter") sendMessage();
 });
