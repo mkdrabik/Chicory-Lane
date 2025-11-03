@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from api_calls import search_with_context
+from api_calls import search_with_context, add_document
 
 app = FastAPI()
 
@@ -28,6 +28,14 @@ class AskRequest(BaseModel):
 def ask(request: AskRequest):
     answer = search_with_context(request.query)
     return {"answer": answer}
+
+@app.post("/upload")
+async def upload(file: UploadFile = File(...)):
+    if file.content_type != "text/plain":
+        raise HTTPException(400, detail="Invalid file type. Only .txt files are allowed.")
+    content = await file.read()
+    add_document(content.decode("utf-8"))
+    return {"message": "File uploaded successfully"}
 
 
 @app.get("/")
