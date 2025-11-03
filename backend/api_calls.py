@@ -43,9 +43,12 @@ def add_document(content: str):
 
 def search_with_context(query: str, format: str) -> str:
     format_instruction = (
-    "Respond in bullet points." if format == "points"
-    else "Respond in a detailed paragraph."
-    )
+    "Respond in bullet points using Markdown `-` or `*`."
+    if format == "points"
+    else "Respond in full paragraphs with no bullet points, no dashes, and no list formatting. Do not use `-` or `*`."
+)
+
+
 
     load_dotenv()
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -70,7 +73,7 @@ def search_with_context(query: str, format: str) -> str:
     chat_response = client.chat.completions.create(
     model="gpt-4.1-mini",
     messages=[
-        {"role": "system", "content": f"You are a helpful assistant. Use the provided context to answer. {format_instruction}"},
+        {"role": "system", "content": f"You are a helpful assistant. Use the provided context to answer. {format_instruction} Always answer in the chosen format."},
         {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
     ]
 )

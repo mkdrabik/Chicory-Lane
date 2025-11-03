@@ -50,9 +50,20 @@ async function getBotResponse(userText, format) {
       body: JSON.stringify({ query: userText, format }),
     });
 
-    const data = await response.json();
-    return data.answer;
+    let data = await response.json();
+    let answer = data.answer;
+
+    //  Only remove bullet-style formatting when paragraph mode
+    if (format === "paragraph") {
+      answer = answer
+        .replace(/^\s*[-*]\s+/gm, "") // remove bullets
+        .replace(/(\n\s*\n)/g, "\n\n"); // preserve paragraphs
+    }
+
+    return answer;
   } catch {
     return "Sorry, I could not get a response from the server.";
   }
 }
+
+
