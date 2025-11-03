@@ -6,7 +6,12 @@ const loadingDiv = document.getElementById("loading");
 function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
-  msg.textContent = text;
+  
+  if (sender === "bot") { // Parse markdown only for bot messages
+    msg.innerHTML = marked.parse(text);
+  } else {
+    msg.textContent = text;
+  }
   messagesDiv.appendChild(msg);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
