@@ -23,11 +23,13 @@ app.add_middleware(
 
 class AskRequest(BaseModel):
     query: str
+    format: str = "paragraph"
 
 @app.post("/ask")
 def ask(request: AskRequest):
-    answer = search_with_context(request.query)
+    answer = search_with_context(request.query, request.format)
     return {"answer": answer}
+
 
 
 @app.get("/")

@@ -4,7 +4,12 @@ from openai import OpenAI
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
-def search_with_context(query: str) -> str:
+def search_with_context(query: str, format: str) -> str:
+    format_instruction = (
+    "Respond in bullet points." if format == "points"
+    else "Respond in a detailed paragraph."
+    )
+
     load_dotenv()
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     qdrant = QdrantClient(
@@ -29,11 +34,12 @@ def search_with_context(query: str) -> str:
 
     # Ask ChatGPT with context
     chat_response = client.chat.completions.create(
-        model="gpt-4.1-mini",  # cheaper + fast, use gpt-4.1 for higher quality
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant. Use the provided context to answer."},
-            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
-        ]
-    )
+    model="gpt-4.1-mini",
+    messages=[
+        {"role": "system", "content": f"You are a helpful assistant. Use the provided context to answer. {format_instruction}"},
+        {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+    ]
+)
+
 
     return chat_response.choices[0].message.content # type: ignore
