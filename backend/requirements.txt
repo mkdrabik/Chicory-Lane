@@ -4,4 +4,4 @@ openai
 qdrant-client
 pydantic
 python-dotenv
-\npython-multipart
+python-multipart
