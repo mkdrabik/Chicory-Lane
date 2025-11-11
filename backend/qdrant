@@ -7,16 +7,16 @@ from qdrant_client.http import models
 load_dotenv()
 # # 🔑 Clients
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-# qdrant = QdrantClient(
-#     url=os.environ["QDRANT_URL"],
-#     api_key=os.environ["QDRANT_API_KEY"]
-# )
 qdrant = QdrantClient(
-    url=os.environ["JOHN_URL"],
-    api_key=os.environ["JOHN_API_KEY"]
+    url=os.environ["QDRANT_URL"],
+    api_key=os.environ["QDRANT_API_KEY"]
 )
+# qdrant = QdrantClient(
+#     url=os.environ["JOHN_URL"],
+#     api_key=os.environ["JOHN_API_KEY"]
+# )
 
-COLLECTION_NAME2 = "chicorylane"
+COLLECTION_NAME2 = "chicorylane2"
 
 # 1️⃣ Create Qdrant collection (only once)
 # qdrant.recreate_collection(
@@ -25,25 +25,25 @@ COLLECTION_NAME2 = "chicorylane"
 # )
 
 # 2️⃣ Ingest sample documents
-docs = [
-    {"id": 1, "text": "Qdrant is an open-source vector database designed to handle large-scale vector embeddings for machine learning applications."},
-]
+# docs = [
+#     {"id": 1, "text": "Qdrant is an open-source vector database designed to handle large-scale vector embeddings for machine learning applications."},
+# ]
 
-vectors, payloads, ids = [], [], []
-for d in docs:
-    emb = client.embeddings.create(
-        model="text-embedding-3-small",
-        input=d["text"]
-    ).data[0].embedding
+# vectors, payloads, ids = [], [], []
+# for d in docs:
+#     emb = client.embeddings.create(
+#         model="text-embedding-3-small",
+#         input=d["text"]
+#     ).data[0].embedding
 
-    vectors.append(emb)
-    payloads.append({"text": d["text"]})
-    ids.append(d["id"])
+#     vectors.append(emb)
+#     payloads.append({"text": d["text"]})
+#     ids.append(d["id"])
 
-qdrant.upsert(
-    collection_name=COLLECTION_NAME2,
-    points=models.Batch(ids=ids, vectors=vectors, payloads=payloads)
-)
+# qdrant.upsert(
+#     collection_name=COLLECTION_NAME2,
+#     points=models.Batch(ids=ids, vectors=vectors, payloads=payloads)
+# )
 
 
 

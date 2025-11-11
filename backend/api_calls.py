@@ -1,11 +1,4 @@
 import os
-from dotenv import load_dotenv
-from openai import OpenAI
-from qdrant_client import QdrantClient
-from qdrant_client.http import models
-import uuid
-
-import os
 import uuid
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -16,8 +9,8 @@ def add_document(content: str, filename: str):
     load_dotenv()
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     qdrant = QdrantClient(
-        url=os.environ["JOHN_URL"],
-        api_key=os.environ["JOHN_API_KEY"]
+        url=os.environ["QDRANT_URL"],
+        api_key=os.environ["QDRANT_API_KEY"]
     )
     COLLECTION_NAME = "chicorylane"
 
