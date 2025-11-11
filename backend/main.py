@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from fastapi.responses import Response
 from api_calls import search_with_context, add_document
 
 app = FastAPI()
@@ -27,6 +28,10 @@ class AskRequest(BaseModel):
 def ask(request: AskRequest):
     answer = search_with_context(request.query, request.format)
     return {"answer": answer}
+
+@app.options("/upload")
+async def upload_preflight():
+    return Response(status_code=204)
 
 @app.post("/upload")
 async def upload(
