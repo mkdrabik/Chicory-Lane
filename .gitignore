@@ -1,4 +1,6 @@
+.idea
 .env
 venv
 backend/__pycache__
+backend/.gitignore
 Chicory Lane.code-workspace
