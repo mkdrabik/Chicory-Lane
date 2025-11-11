@@ -8,18 +8,41 @@
   <body>
     <div class="container">
       <h1>Upload a Document</h1>
+
       <form id="upload-form">
+        <input
+          type="text"
+          id="file-name"
+          placeholder="Enter a document name (optional)"
+        />
         <input type="file" id="file-input" accept=".txt, text/plain" />
         <button type="submit">Upload</button>
       </form>
+
       <div id="status"></div>
 
-      <hr>
+      <hr />
 
       <div class="text-submission-area">
         <h2>Or Paste Text</h2>
-        <textarea id="text-input" placeholder="Paste your text here..."></textarea>
+        <input
+          type="text"
+          id="text-name"
+          placeholder="Enter a document name (optional)"
+        />
+        <textarea
+          id="text-input"
+          placeholder="Paste your text here..."
+        ></textarea>
         <button id="submit-text-btn">Submit Text</button>
+      </div>
+
+      <hr />
+
+      <div class="uploaded-documents">
+        <h2>Your Uploaded Documents</h2>
+        <button id="refresh-btn">Refresh List</button>
+        <ul id="document-list"></ul>
       </div>
     </div>
     <script src="upload.js"></script>
