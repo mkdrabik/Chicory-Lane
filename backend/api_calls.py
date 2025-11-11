@@ -53,9 +53,6 @@ def search_with_context(query: str, format: str) -> str:
     if format == "points"
     else "Respond in full paragraphs with no bullet points, no dashes, and no list formatting. Do not use `-` or `*`."
 )
-
-
-
     load_dotenv()
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     qdrant = QdrantClient(
@@ -83,6 +80,30 @@ def search_with_context(query: str, format: str) -> str:
         {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
     ]
 )
-
-
     return chat_response.choices[0].message.content # type: ignore
+
+
+def get_all_documents():
+    """Fetch all unique document filenames stored in Qdrant."""
+    load_dotenv()
+    qdrant = QdrantClient(
+        url=os.environ["QDRANT_URL"],
+        api_key=os.environ["QDRANT_API_KEY"]
+    )
+
+    COLLECTION_NAME = "chicorylane"
+    documents = set()
+
+    try:
+        scroll = qdrant.scroll(collection_name=COLLECTION_NAME, limit=200)
+        points, _ = scroll
+
+        for point in points:
+            if "filename" in point.payload:
+                documents.add(point.payload["filename"])
+
+        return list(documents)
+
+    except Exception as e:
+        print("❌ Error retrieving documents:", e)
+        raise

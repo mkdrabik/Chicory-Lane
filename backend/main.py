@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.responses import Response
-from api_calls import search_with_context, add_document
+from api_calls import search_with_context, add_document, get_all_documents
 
 app = FastAPI()
 
@@ -49,23 +49,13 @@ async def upload(
     return {"message": f"File '{name}' uploaded successfully"}
 
 @app.get("/documents")
-def get_documents():
-    load_dotenv()
-    qdrant = QdrantClient(
-        url=os.environ["QDRANT_URL"],
-        api_key=os.environ["QDRANT_API_KEY"]
-    )
+def documents():
+    try:
+        docs = get_all_documents()
+        return {"documents": docs}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    COLLECTION_NAME = "chicorylane"
-    documents = set()
-    scroll = qdrant.scroll(collection_name=COLLECTION_NAME, limit=200)
-    points, _ = scroll
-
-    for point in points:
-        if "filename" in point.payload:
-            documents.add(point.payload["filename"])
-
-    return {"documents": list(documents)}
 
 
 @app.get("/")
