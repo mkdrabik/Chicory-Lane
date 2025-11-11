@@ -45,7 +45,7 @@ def search_with_context(query: str, format: str) -> str:
     format_instruction = (
     "Respond in bullet points using Markdown `-` or `*`."
     if format == "points"
-    else "Respond in full paragraphs with no bullet points, no dashes, and no list formatting. Do not use `-` or `*`."
+    else "Respond in full paragraphs with spacing with no bullet points, no dashes, and no list formatting. Do not use `-` or `*`."
 )
 
 
