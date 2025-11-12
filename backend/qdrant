@@ -11,6 +11,7 @@ qdrant = QdrantClient(
     url=os.environ["QDRANT_URL"],
     api_key=os.environ["QDRANT_API_KEY"]
 )
+
 # qdrant = QdrantClient(
 #     url=os.environ["JOHN_URL"],
 #     api_key=os.environ["JOHN_API_KEY"]

@@ -39,6 +39,7 @@ form.addEventListener("submit", async (e) => {
       statusDiv.textContent = result.message;
       fileInput.value = "";
       fileNameInput.value = "";
+      await fetchDocuments(true);
     } else {
       statusDiv.textContent = "Upload failed.";
     }
@@ -58,7 +59,6 @@ submitTextBtn.addEventListener("click", async () => {
   }
 
   const textBlob = new Blob([text], { type: "text/plain" });
-
   const formData = new FormData();
   formData.append("file", textBlob, "pasted-text.txt");
   if (docName) formData.append("document_name", docName);
@@ -76,6 +76,7 @@ submitTextBtn.addEventListener("click", async () => {
       statusDiv.textContent = result.message;
       textInput.value = "";
       textNameInput.value = "";
+      await fetchDocuments(true);
     } else {
       statusDiv.textContent = "Text submission failed.";
     }
@@ -86,36 +87,81 @@ submitTextBtn.addEventListener("click", async () => {
 });
 
 const refreshBtn = document.getElementById("refresh-btn");
+const loadMoreBtn = document.getElementById("load-more-btn");
 const documentList = document.getElementById("document-list");
 
-async function fetchDocuments() {
-  documentList.innerHTML = "<li>Loading...</li>";
+let offset = 0;
+const limit = 10;
+let totalDocs = 0;
+
+async function fetchDocuments(reset = false) {
+  if (reset) {
+    offset = 0;
+    documentList.innerHTML = "<li>Loading...</li>";
+  }
+
   try {
-    const response = await fetch("https://chicory-lane.onrender.com/documents");
-    if (response.ok) {
-      const data = await response.json();
-      const documents = data.documents || [];
+    const response = await fetch(
+      `https://chicory-lane.onrender.com/documents?limit=${limit}&offset=${offset}`
+    );
 
-      if (documents.length === 0) {
-        documentList.innerHTML = "<li>No documents uploaded yet.</li>";
-        return;
-      }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      // Populate list
-      documentList.innerHTML = "";
-      documents.forEach((doc) => {
-        const li = document.createElement("li");
-        li.textContent = doc;
-        documentList.appendChild(li);
-      });
-    } else {
-      documentList.innerHTML = "<li>Failed to load documents.</li>";
+    const data = await response.json();
+    const { documents, total } = data;
+    totalDocs = total;
+
+    if (reset) documentList.innerHTML = "";
+
+    if (!documents || documents.length === 0) {
+      if (reset) documentList.innerHTML = "<li>No documents uploaded yet.</li>";
+      loadMoreBtn.style.display = "none";
+      return;
     }
+
+    documents.forEach((doc) => {
+      const li = document.createElement("li");
+      li.textContent = doc;
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.className = "delete-btn";
+      deleteBtn.onclick = () => deleteDocument(doc, li);
+
+      li.appendChild(deleteBtn);
+      documentList.appendChild(li);
+    });
+
+    offset += limit;
+    loadMoreBtn.style.display = offset < totalDocs ? "block" : "none";
   } catch (err) {
     console.error("Error fetching documents:", err);
     documentList.innerHTML = "<li>Error fetching documents.</li>";
   }
 }
 
-window.addEventListener("load", fetchDocuments);
-refreshBtn.addEventListener("click", fetchDocuments);
+async function deleteDocument(filename, liElement) {
+  if (!confirm(`Delete document "${filename}"?`)) return;
+
+  try {
+    const response = await fetch(
+      `https://chicory-lane.onrender.com/documents/${encodeURIComponent(
+        filename
+      )}`,
+      { method: "DELETE" }
+    );
+
+    if (response.ok) {
+      liElement.remove();
+    } else {
+      alert("Failed to delete document.");
+    }
+  } catch (err) {
+    console.error("Error deleting document:", err);
+    alert("Error deleting document.");
+  }
+}
+
+refreshBtn.addEventListener("click", () => fetchDocuments(true));
+loadMoreBtn.addEventListener("click", () => fetchDocuments(false));
+window.addEventListener("load", () => fetchDocuments(true));

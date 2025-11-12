@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.responses import Response
-from api_calls import search_with_context, add_document, get_all_documents
+from api_calls import search_with_context, add_document, get_documents_paginated, delete_document
 
 app = FastAPI()
 
@@ -48,15 +48,31 @@ async def upload(
     
     return {"message": f"File '{name}' uploaded successfully"}
 
+# @app.get("/documents")
+# def documents():
+#     try:
+#         docs = get_all_documents()
+#         return {"documents": docs}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/documents")
-def documents():
+def list_documents(limit: int = 50, offset: int = 0):
+    """Return paginated document list."""
     try:
-        docs = get_all_documents()
-        return {"documents": docs}
+        result = get_documents_paginated(limit, offset)
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+@app.delete("/documents/{filename}")
+def remove_document(filename: str):
+    """Delete all vectors for a given document filename."""
+    try:
+        result = delete_document(filename)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def root():
