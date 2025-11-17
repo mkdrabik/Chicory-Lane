@@ -10,8 +10,7 @@ origins = [
     "http://127.0.0.1:5500",
     "http://localhost:5500",
     "https://chicorylane.netlify.app",
-    "https://www.chicorylane.com"
-
+    "https://chicorylane.com"
 ]
 
 app.add_middleware(
@@ -25,6 +24,10 @@ app.add_middleware(
 class AskRequest(BaseModel):
     query: str
     format: str = "paragraph"
+
+@app.options("/ask")
+def ask_preflight():
+    return Response(status_code=204)
 
 @app.post("/ask")
 def ask(request: AskRequest):
@@ -50,13 +53,6 @@ async def upload(
     
     return {"message": f"File '{name}' uploaded successfully"}
 
-# @app.get("/documents")
-# def documents():
-#     try:
-#         docs = get_all_documents()
-#         return {"documents": docs}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/documents")
 def list_documents(limit: int = 50, offset: int = 0):
