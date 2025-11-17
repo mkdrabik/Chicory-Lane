@@ -25,11 +25,18 @@ class AskRequest(BaseModel):
     query: str
     format: str = "paragraph"
 
+@app.options("/ask")
+def ask_preflight():
+    return Response(status_code=204)
 
 @app.post("/ask")
 def ask(request: AskRequest):
     answer = search_with_context(request.query, request.format)
     return {"answer": answer}
+
+@app.options("/upload")
+async def upload_preflight():
+    return Response(status_code=204)
 
 @app.post("/upload")
 async def upload(
