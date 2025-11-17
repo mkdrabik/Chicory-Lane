@@ -17,7 +17,7 @@ qdrant = QdrantClient(
 #     api_key=os.environ["JOHN_API_KEY"]
 # )
 
-COLLECTION_NAME2 = "chicorylane2"
+COLLECTION_NAME2 = "chicorylane"
 
 # 1️⃣ Create Qdrant collection (only once)
 # qdrant.recreate_collection(
@@ -57,9 +57,9 @@ COLLECTION_NAME2 = "chicorylane2"
 #     input=query
 # ).data[0].embedding
 
-# search_result = qdrant.search(
+# search_result = qdrant.query_points(
 #     collection_name=COLLECTION_NAME2,
-#     query_vector=query_emb,
+#     query=query_emb,
 #     limit=3
 # )
 
@@ -77,3 +77,39 @@ COLLECTION_NAME2 = "chicorylane2"
 # )
 
 # print("\n💡 ChatGPT Answer:\n", chat_response.choices[0].message.content)
+# 1️⃣ Embed the user query
+query = "Why is land a commodity?"
+query_emb = client.embeddings.create(
+    model="text-embedding-3-small",
+    input=query
+).data[0].embedding
+
+# 2️⃣ Retrieve relevant points from Qdrant (v2 syntax)
+search_result = qdrant.query_points(
+    collection_name=COLLECTION_NAME2,
+    query=query_emb,
+    limit=3
+)
+
+# 3️⃣ Extract context text properly from Qdrant v2 output
+context_chunks = []
+for point in search_result.points:
+    payload = point.payload or {}
+    if "text" in payload:
+        context_chunks.append(payload["text"])
+
+context = "\n".join(context_chunks)
+print("🔍 Retrieved context:\n", context)
+
+# 4️⃣ Ask OpenAI using provided context
+chat_response = client.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant. Use the provided context to answer the user's query."},
+        {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+    ]
+)
+
+answer = chat_response.choices[0].message.content
+
+print("\n💡 ChatGPT Answer:\n", answer)
