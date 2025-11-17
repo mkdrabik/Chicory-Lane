@@ -13,3 +13,5 @@ jobs:
       - name: Keep Render app awake
         run: |
           curl -s -o /dev/null https://chicory-lane.onrender.com/
+          curl -s -o /dev/null https://chicory-lane.onrender.com/ask
+          curl -s -o /dev/null https://chicory-lane.onrender.com/documents
