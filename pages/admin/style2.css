@@ -24,6 +24,7 @@ body {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
+  align-items: center;
 }
 ul#document-list li {
   display: flex;
@@ -31,11 +32,24 @@ ul#document-list li {
   align-items: center;
   margin-bottom: 6px;
 }
-.delete-btn {
+
+/* visually separate and push to the right of the controls row */
+.delete-selected-btn {
   background: crimson;
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 4px 8px;
+  padding: 6px 12px;
   cursor: pointer;
+  font-weight: 600;margin-left: auto;      /* pushes this button to the far right in .doc-controls */
+  display: inline-block;
+}
+
+.delete-selected-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-btn:hover:not(:disabled) {
+  filter: brightness(0.9);
 }

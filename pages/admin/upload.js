@@ -89,19 +89,11 @@ submitTextBtn.addEventListener("click", async () => {
 const refreshBtn = document.getElementById("refresh-btn");
 const loadMoreBtn = document.getElementById("load-more-btn");
 const documentList = document.getElementById("document-list");
+// prefer an #document-controls id, fall back to .doc-controls or refreshBtn parent
+const docControls = document.getElementById("document-controls") || document.querySelector(".doc-controls") || (refreshBtn ? refreshBtn.parentNode : null);
 
-// create Delete Selected button dynamically
-const deleteSelectedBtn = document.createElement("button");
-deleteSelectedBtn.id = "delete-selected-btn";
-deleteSelectedBtn.textContent = "Delete Selected";
-deleteSelectedBtn.style.display = "none";
-deleteSelectedBtn.className = "delete-selected-btn";
-// insert after refreshBtn if possible, otherwise append to body as fallback
-if (refreshBtn && refreshBtn.parentNode) {
-  refreshBtn.parentNode.insertBefore(deleteSelectedBtn, refreshBtn.nextSibling);
-} else {
-  document.body.appendChild(deleteSelectedBtn);
-}
+// create Delete Selected button lazily (will be added to DOM when documents are loaded)
+let deleteSelectedBtn = null;
 
 let offset = 0;
 const limit = 10;
@@ -129,14 +121,13 @@ async function fetchDocuments(reset = false) {
     if (!documents || documents.length === 0) {
       if (reset) documentList.innerHTML = "<li>No documents uploaded yet.</li>";
       loadMoreBtn.style.display = "none";
-      deleteSelectedBtn.style.display = "none";
+      if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
       return;
     }
 
     documents.forEach((doc) => {
       const li = document.createElement("li");
 
-      // checkbox for multi-select
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.className = "doc-checkbox";
@@ -144,7 +135,7 @@ async function fetchDocuments(reset = false) {
       checkbox.id = `doc-${encodeURIComponent(doc)}`;
       checkbox.addEventListener("change", () => {
         const anyChecked = document.querySelectorAll(".doc-checkbox:checked").length > 0;
-        deleteSelectedBtn.style.display = anyChecked ? "inline-block" : "none";
+        if (deleteSelectedBtn) deleteSelectedBtn.style.display = anyChecked ? "inline-block" : "none";
       });
 
       const label = document.createElement("label");
@@ -158,10 +149,32 @@ async function fetchDocuments(reset = false) {
       documentList.appendChild(li);
     });
 
+    // Delete Selected button creation
+    if (!deleteSelectedBtn && documents.length > 0) {
+      deleteSelectedBtn = document.createElement("button");
+      deleteSelectedBtn.id = "delete-selected-btn";
+      deleteSelectedBtn.type = "button";
+      deleteSelectedBtn.textContent = "Delete Selected";
+      deleteSelectedBtn.className = "delete-selected-btn delete-btn";
+      deleteSelectedBtn.style.display = "none";
+      deleteSelectedBtn.addEventListener("click", deleteSelectedDocuments);
+      if (docControls) {
+        docControls.appendChild(deleteSelectedBtn);
+      } else {
+        // fallback: append after refresh button; log to console so you can debug
+        console.warn("document-controls container not found — appending delete button next to refreshBtn");
+        if (refreshBtn && refreshBtn.parentNode) {
+          refreshBtn.parentNode.insertBefore(deleteSelectedBtn, refreshBtn.nextSibling);
+        } else {
+          document.body.appendChild(deleteSelectedBtn);
+        }
+      }
+    }
+
     offset += limit;
     loadMoreBtn.style.display = offset < totalDocs ? "block" : "none";
     // hide delete button if nothing selected
-    deleteSelectedBtn.style.display = document.querySelectorAll(".doc-checkbox:checked").length > 0 ? "inline-block" : "none";
+    if (deleteSelectedBtn) deleteSelectedBtn.style.display = document.querySelectorAll(".doc-checkbox:checked").length > 0 ? "inline-block" : "none";
   } catch (err) {
     console.error("Error fetching documents:", err);
     documentList.innerHTML = "<li>Error fetching documents.</li>";
@@ -196,7 +209,7 @@ async function deleteSelectedDocuments() {
   if (checked.length === 0) return;
   if (!confirm(`Delete ${checked.length} selected document(s)?`)) return;
 
-  deleteSelectedBtn.disabled = true;
+  if (deleteSelectedBtn) deleteSelectedBtn.disabled = true;
   statusDiv.textContent = "Deleting selected documents...";
 
   try {
@@ -223,12 +236,10 @@ async function deleteSelectedDocuments() {
     console.error("Error deleting selected documents:", err);
     statusDiv.textContent = "Error deleting documents.";
   } finally {
-    deleteSelectedBtn.disabled = false;
-    deleteSelectedBtn.style.display = "none";
+    if (deleteSelectedBtn) deleteSelectedBtn.disabled = false;
+    if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
   }
 }
-
-deleteSelectedBtn.addEventListener("click", deleteSelectedDocuments);
 
 refreshBtn.addEventListener("click", () => fetchDocuments(true));
 loadMoreBtn.addEventListener("click", () => fetchDocuments(false));
