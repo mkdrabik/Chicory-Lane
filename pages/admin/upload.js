@@ -158,10 +158,11 @@ async function fetchDocuments(reset = false) {
       deleteSelectedBtn.className = "delete-selected-btn delete-btn";
       deleteSelectedBtn.style.display = "none";
       deleteSelectedBtn.addEventListener("click", deleteSelectedDocuments);
+
       if (docControls) {
         docControls.appendChild(deleteSelectedBtn);
       } else {
-        // fallback: append after refresh button; log to console so you can debug
+        // fallback: append after refresh button; log to console so you can debug if delete button does not appear
         console.warn("document-controls container not found — appending delete button next to refreshBtn");
         if (refreshBtn && refreshBtn.parentNode) {
           refreshBtn.parentNode.insertBefore(deleteSelectedBtn, refreshBtn.nextSibling);
@@ -181,29 +182,28 @@ async function fetchDocuments(reset = false) {
   }
 }
 
-async function deleteDocument(filename, liElement) {
-  if (!confirm(`Delete document "${filename}"?`)) return;
+// async function deleteDocument(filename, liElement) {
+//   if (!confirm(`Delete document "${filename}"?`)) return;
 
-  try {
-    const response = await fetch(
-      `https://chicory-lane.onrender.com/documents/${encodeURIComponent(
-        filename
-      )}`,
-      { method: "DELETE" }
-    );
+//   try {
+//     const response = await fetch(
+//       `https://chicory-lane.onrender.com/documents/${encodeURIComponent(
+//         filename
+//       )}`,
+//       { method: "DELETE" }
+//     );
 
-    if (response.ok) {
-      liElement.remove();
-    } else {
-      alert("Failed to delete document.");
-    }
-  } catch (err) {
-    console.error("Error deleting document:", err);
-    alert("Error deleting document.");
-  }
-}
+//     if (response.ok) {
+//       liElement.remove();
+//     } else {
+//       alert("Failed to delete document.");
+//     }
+//   } catch (err) {
+//     console.error("Error deleting document:", err);
+//     alert("Error deleting document.");
+//   }
+// }
 
-// new: delete selected documents handler
 async function deleteSelectedDocuments() {
   const checked = Array.from(document.querySelectorAll(".doc-checkbox:checked")).map(cb => cb.value);
   if (checked.length === 0) return;

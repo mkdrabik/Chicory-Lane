@@ -2,13 +2,19 @@ body {
   font-family: sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start;   /* allow content to start at top so page can grow */
+  min-height: 100vh;         /* allow body to expand and be scrollable */
+  padding-top: 28px;         /* small top spacing to replace centering */
   margin: 0;
 }
 
 .container {
   text-align: center;
+  max-width: 980px;
+  width: 94%;
+  margin: 18px auto;
+  padding: 14px;
+  box-sizing: border-box;
 }
 
 #upload-form {
@@ -26,14 +32,6 @@ body {
   margin-bottom: 10px;
   align-items: center;
 }
-ul#document-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-/* visually separate and push to the right of the controls row */
 .delete-selected-btn {
   background: crimson;
   color: white;
@@ -41,7 +39,8 @@ ul#document-list li {
   border-radius: 4px;
   padding: 6px 12px;
   cursor: pointer;
-  font-weight: 600;margin-left: auto;      /* pushes this button to the far right in .doc-controls */
+  font-weight: 600;
+  margin-left: auto; /* pushes this button to the far right in .doc-controls */
   display: inline-block;
 }
 
@@ -52,4 +51,107 @@ ul#document-list li {
 
 .delete-btn:hover:not(:disabled) {
   filter: brightness(0.9);
+}
+
+/* Small, non-intrusive layout improvements */
+#file-name,
+#text-name {
+  display: block;
+  max-width: 380px;      /* a bit bigger than the placeholder text */
+  width: 100%;
+  margin: 6px auto 10px; /* centered horizontally */
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Make textarea look like the name boxes and sit inline with the submit button */
+#text-input {
+  display: inline-block;
+  vertical-align: middle;
+  width: calc(60% - 64px); /* leave room for the button on wide layouts */
+  max-width: 400px;
+  min-height: 80px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;   /* make textarea use the same font as other inputs */
+  font-size: 14px;
+  color: inherit;
+  #text-input::placeholder {
+    font-family: inherit;   /* ensure placeholder matches */
+    color: #94a3b8;         /* adjust to match other placeholders if needed */
+    opacity: 1;
+  }
+}
+
+#submit-text-btn {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+/* Optional: if your markup has a wrapper for the paste area (.text-upload) prefer flex layout */
+.text-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 640px) {
+  #text-input { display: block; width: 100%; max-width: 520px; }
+  #submit-text-btn { display: block; width: 100%; margin-left: 0; margin-top: 8px; height: auto; }
+  .text-upload { flex-direction: column; align-items: stretch; }
+}
+
+/* List layout: no bullets, checkbox left, label right */
+ul#document-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul#document-list li {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  margin-bottom: 6px; /* reduced vertical gap */
+  background: transparent;
+}
+
+/* checkbox sizing & alignment */
+ul#document-list li .doc-checkbox {
+  margin: 0;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+ul#document-list li label {
+  margin-left: 8px;
+  flex: 1;
+  text-align: left;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background .05s ease, color .05s ease, font-weight .05s ease, transform .05s ease;
+}
+
+/* hover affordance for labels */
+ul#document-list li label:hover {
+  background: rgba(0,0,0,0.03);
+  transform: translateY(-1px);
+}
+
+ul#document-list li input.doc-checkbox:checked + label {
+  font-weight: 550; /* slightly bolder when selected */
 }
