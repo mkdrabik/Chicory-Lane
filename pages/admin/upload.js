@@ -90,6 +90,19 @@ const refreshBtn = document.getElementById("refresh-btn");
 const loadMoreBtn = document.getElementById("load-more-btn");
 const documentList = document.getElementById("document-list");
 
+// create Delete Selected button dynamically
+const deleteSelectedBtn = document.createElement("button");
+deleteSelectedBtn.id = "delete-selected-btn";
+deleteSelectedBtn.textContent = "Delete Selected";
+deleteSelectedBtn.style.display = "none";
+deleteSelectedBtn.className = "delete-selected-btn";
+// insert after refreshBtn if possible, otherwise append to body as fallback
+if (refreshBtn && refreshBtn.parentNode) {
+  refreshBtn.parentNode.insertBefore(deleteSelectedBtn, refreshBtn.nextSibling);
+} else {
+  document.body.appendChild(deleteSelectedBtn);
+}
+
 let offset = 0;
 const limit = 10;
 let totalDocs = 0;
@@ -116,24 +129,39 @@ async function fetchDocuments(reset = false) {
     if (!documents || documents.length === 0) {
       if (reset) documentList.innerHTML = "<li>No documents uploaded yet.</li>";
       loadMoreBtn.style.display = "none";
+      deleteSelectedBtn.style.display = "none";
       return;
     }
 
     documents.forEach((doc) => {
       const li = document.createElement("li");
-      li.textContent = doc;
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.className = "delete-btn";
-      deleteBtn.onclick = () => deleteDocument(doc, li);
+      // checkbox for multi-select
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "doc-checkbox";
+      checkbox.value = doc;
+      checkbox.id = `doc-${encodeURIComponent(doc)}`;
+      checkbox.addEventListener("change", () => {
+        const anyChecked = document.querySelectorAll(".doc-checkbox:checked").length > 0;
+        deleteSelectedBtn.style.display = anyChecked ? "inline-block" : "none";
+      });
 
-      li.appendChild(deleteBtn);
+      const label = document.createElement("label");
+      label.htmlFor = checkbox.id;
+      label.textContent = doc;
+      label.style.marginLeft = "8px";
+
+      li.appendChild(checkbox);
+      li.appendChild(label);
+
       documentList.appendChild(li);
     });
 
     offset += limit;
     loadMoreBtn.style.display = offset < totalDocs ? "block" : "none";
+    // hide delete button if nothing selected
+    deleteSelectedBtn.style.display = document.querySelectorAll(".doc-checkbox:checked").length > 0 ? "inline-block" : "none";
   } catch (err) {
     console.error("Error fetching documents:", err);
     documentList.innerHTML = "<li>Error fetching documents.</li>";
@@ -161,6 +189,46 @@ async function deleteDocument(filename, liElement) {
     alert("Error deleting document.");
   }
 }
+
+// new: delete selected documents handler
+async function deleteSelectedDocuments() {
+  const checked = Array.from(document.querySelectorAll(".doc-checkbox:checked")).map(cb => cb.value);
+  if (checked.length === 0) return;
+  if (!confirm(`Delete ${checked.length} selected document(s)?`)) return;
+
+  deleteSelectedBtn.disabled = true;
+  statusDiv.textContent = "Deleting selected documents...";
+
+  try {
+    // delete each in sequence or in parallel; use Promise.all for parallel deletes
+    const deletePromises = checked.map((filename) =>
+      fetch(`https://chicory-lane.onrender.com/documents/${encodeURIComponent(filename)}`, { method: "DELETE" })
+        .then((res) => ({ filename, ok: res.ok, status: res.status }))
+        .catch((err) => ({ filename, ok: false, error: err }))
+    );
+
+    const results = await Promise.all(deletePromises);
+    const failed = results.filter(r => !r.ok);
+
+    if (failed.length > 0) {
+      console.error("Some deletes failed:", failed);
+      statusDiv.textContent = `Failed to delete ${failed.length} document(s).`;
+    } else {
+      statusDiv.textContent = "Selected documents deleted.";
+    }
+
+    // refresh the list to keep state simple
+    await fetchDocuments(true);
+  } catch (err) {
+    console.error("Error deleting selected documents:", err);
+    statusDiv.textContent = "Error deleting documents.";
+  } finally {
+    deleteSelectedBtn.disabled = false;
+    deleteSelectedBtn.style.display = "none";
+  }
+}
+
+deleteSelectedBtn.addEventListener("click", deleteSelectedDocuments);
 
 refreshBtn.addEventListener("click", () => fetchDocuments(true));
 loadMoreBtn.addEventListener("click", () => fetchDocuments(false));
