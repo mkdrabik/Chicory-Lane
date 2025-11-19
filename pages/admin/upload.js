@@ -89,11 +89,11 @@ submitTextBtn.addEventListener("click", async () => {
 const refreshBtn = document.getElementById("refresh-btn");
 const loadMoreBtn = document.getElementById("load-more-btn");
 const documentList = document.getElementById("document-list");
-// prefer an #document-controls id, fall back to .doc-controls or refreshBtn parent
-const docControls = document.getElementById("document-controls") || document.querySelector(".doc-controls") || (refreshBtn ? refreshBtn.parentNode : null);
 
-// create Delete Selected button lazily (will be added to DOM when documents are loaded)
+// lazy buttons (will be created after documents load)
 let deleteSelectedBtn = null;
+let selectAllBtn = null;
+let unselectAllBtn = null;
 
 let offset = 0;
 const limit = 10;
@@ -122,6 +122,8 @@ async function fetchDocuments(reset = false) {
       if (reset) documentList.innerHTML = "<li>No documents uploaded yet.</li>";
       loadMoreBtn.style.display = "none";
       if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
+      if (selectAllBtn) selectAllBtn.style.display = "none";
+      if (unselectAllBtn) unselectAllBtn.style.display = "none";
       return;
     }
 
@@ -149,33 +151,67 @@ async function fetchDocuments(reset = false) {
       documentList.appendChild(li);
     });
 
-    // Delete Selected button creation
-    if (!deleteSelectedBtn && documents.length > 0) {
-      deleteSelectedBtn = document.createElement("button");
-      deleteSelectedBtn.id = "delete-selected-btn";
-      deleteSelectedBtn.type = "button";
-      deleteSelectedBtn.textContent = "Delete Selected";
-      deleteSelectedBtn.className = "delete-selected-btn delete-btn";
-      deleteSelectedBtn.style.display = "none";
-      deleteSelectedBtn.addEventListener("click", deleteSelectedDocuments);
+    // controls container fallback
+    const docControls = document.getElementById("document-controls") || document.querySelector(".doc-controls") || (refreshBtn ? refreshBtn.parentNode : null);
+
+    // lazily create Select All / Unselect All / Delete Selected buttons once
+    if (!selectAllBtn && documents.length > 0) {
+      selectAllBtn = document.createElement("button");
+      selectAllBtn.id = "select-all-btn";
+      selectAllBtn.type = "button";
+      selectAllBtn.textContent = "Select All";
+      selectAllBtn.className = "btn";
+      selectAllBtn.style.display = "inline-block";
+      selectAllBtn.addEventListener("click", () => {
+        document.querySelectorAll(".doc-checkbox").forEach(cb => cb.checked = true);
+        if (deleteSelectedBtn) deleteSelectedBtn.style.display = "inline-block";
+      });
+
+      unselectAllBtn = document.createElement("button");
+      unselectAllBtn.id = "unselect-all-btn";
+      unselectAllBtn.type = "button";
+      unselectAllBtn.textContent = "Unselect All";
+      unselectAllBtn.className = "btn";
+      unselectAllBtn.style.display = "inline-block";
+      unselectAllBtn.addEventListener("click", () => {
+        document.querySelectorAll(".doc-checkbox").forEach(cb => cb.checked = false);
+        if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
+      });
+
+      // ensure deleteSelected exists (create it if not)
+      if (!deleteSelectedBtn) {
+        deleteSelectedBtn = document.createElement("button");
+        deleteSelectedBtn.id = "delete-selected-btn";
+        deleteSelectedBtn.type = "button";
+        deleteSelectedBtn.textContent = "Delete Selected";
+        deleteSelectedBtn.className = "delete-selected-btn delete-btn";
+        deleteSelectedBtn.style.display = "none";
+        deleteSelectedBtn.addEventListener("click", deleteSelectedDocuments);
+      }
 
       if (docControls) {
+        // place select/unselect on the left of the secondary controls, delete on the right
+        docControls.prepend(unselectAllBtn);
+        docControls.prepend(selectAllBtn);
         docControls.appendChild(deleteSelectedBtn);
+      } else if (refreshBtn && refreshBtn.parentNode) {
+        refreshBtn.parentNode.insertBefore(selectAllBtn, refreshBtn);
+        refreshBtn.parentNode.insertBefore(unselectAllBtn, refreshBtn);
+        refreshBtn.parentNode.insertBefore(deleteSelectedBtn, refreshBtn.nextSibling);
       } else {
-        // fallback: append after refresh button; log to console so you can debug if delete button does not appear
-        console.warn("document-controls container not found — appending delete button next to refreshBtn");
-        if (refreshBtn && refreshBtn.parentNode) {
-          refreshBtn.parentNode.insertBefore(deleteSelectedBtn, refreshBtn.nextSibling);
-        } else {
-          document.body.appendChild(deleteSelectedBtn);
-        }
+        document.body.appendChild(selectAllBtn);
+        document.body.appendChild(unselectAllBtn);
+        document.body.appendChild(deleteSelectedBtn);
       }
     }
 
     offset += limit;
     loadMoreBtn.style.display = offset < totalDocs ? "block" : "none";
-    // hide delete button if nothing selected
-    if (deleteSelectedBtn) deleteSelectedBtn.style.display = document.querySelectorAll(".doc-checkbox:checked").length > 0 ? "inline-block" : "none";
+
+    // ensure delete button visibility reflects current selections
+    if (deleteSelectedBtn) {
+      deleteSelectedBtn.style.display = document.querySelectorAll(".doc-checkbox:checked").length > 0 ? "inline-block" : "none";
+    }
   } catch (err) {
     console.error("Error fetching documents:", err);
     documentList.innerHTML = "<li>Error fetching documents.</li>";

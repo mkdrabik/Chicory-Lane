@@ -29,9 +29,19 @@ body {
 .doc-controls {
   display: flex;
   gap: 8px;
-  margin-bottom: 10px;
+  justify-content: center;    /* centered */
   align-items: center;
+  margin-top: 8px;
 }
+
+.doc-controls-secondary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+}
+
 .delete-selected-btn {
   background: crimson;
   color: white;
