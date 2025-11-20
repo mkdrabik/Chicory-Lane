@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Keep Render app awake
         run: |
-          curl -s -o /dev/null https://chicory-lane.onrender.com/
+          curl -s -o /dev/null https://chicory-lane-iyf5.onrender.com/
