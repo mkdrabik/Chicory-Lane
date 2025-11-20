@@ -29,10 +29,13 @@ form.addEventListener("submit", async (e) => {
   statusDiv.textContent = "Uploading...";
 
   try {
-    const response = await fetch("https://chicory-lane.onrender.com/upload", {
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(
+      "https://chicory-lane-iyf5.onrender.com/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     if (response.ok) {
       const result = await response.json();
@@ -66,10 +69,13 @@ submitTextBtn.addEventListener("click", async () => {
   statusDiv.textContent = "Submitting text...";
 
   try {
-    const response = await fetch("https://chicory-lane.onrender.com/upload", {
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(
+      "https://chicory-lane-iyf5.onrender.com/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     if (response.ok) {
       const result = await response.json();
@@ -107,7 +113,7 @@ async function fetchDocuments(reset = false) {
 
   try {
     const response = await fetch(
-      `https://chicory-lane.onrender.com/documents?limit=${limit}&offset=${offset}`
+      `https://chicory-lane-iyf5.onrender.com/documents?limit=${limit}&offset=${offset}`
     );
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -136,8 +142,12 @@ async function fetchDocuments(reset = false) {
       checkbox.value = doc;
       checkbox.id = `doc-${encodeURIComponent(doc)}`;
       checkbox.addEventListener("change", () => {
-        const anyChecked = document.querySelectorAll(".doc-checkbox:checked").length > 0;
-        if (deleteSelectedBtn) deleteSelectedBtn.style.display = anyChecked ? "inline-block" : "none";
+        const anyChecked =
+          document.querySelectorAll(".doc-checkbox:checked").length > 0;
+        if (deleteSelectedBtn)
+          deleteSelectedBtn.style.display = anyChecked
+            ? "inline-block"
+            : "none";
       });
 
       const label = document.createElement("label");
@@ -152,7 +162,10 @@ async function fetchDocuments(reset = false) {
     });
 
     // controls container fallback
-    const docControls = document.getElementById("document-controls") || document.querySelector(".doc-controls") || (refreshBtn ? refreshBtn.parentNode : null);
+    const docControls =
+      document.getElementById("document-controls") ||
+      document.querySelector(".doc-controls") ||
+      (refreshBtn ? refreshBtn.parentNode : null);
 
     // lazily create Select All / Unselect All / Delete Selected buttons once
     if (!selectAllBtn && documents.length > 0) {
@@ -163,7 +176,9 @@ async function fetchDocuments(reset = false) {
       selectAllBtn.className = "btn";
       selectAllBtn.style.display = "inline-block";
       selectAllBtn.addEventListener("click", () => {
-        document.querySelectorAll(".doc-checkbox").forEach(cb => cb.checked = true);
+        document
+          .querySelectorAll(".doc-checkbox")
+          .forEach((cb) => (cb.checked = true));
         if (deleteSelectedBtn) deleteSelectedBtn.style.display = "inline-block";
       });
 
@@ -174,7 +189,9 @@ async function fetchDocuments(reset = false) {
       unselectAllBtn.className = "btn";
       unselectAllBtn.style.display = "inline-block";
       unselectAllBtn.addEventListener("click", () => {
-        document.querySelectorAll(".doc-checkbox").forEach(cb => cb.checked = false);
+        document
+          .querySelectorAll(".doc-checkbox")
+          .forEach((cb) => (cb.checked = false));
         if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
       });
 
@@ -197,7 +214,10 @@ async function fetchDocuments(reset = false) {
       } else if (refreshBtn && refreshBtn.parentNode) {
         refreshBtn.parentNode.insertBefore(selectAllBtn, refreshBtn);
         refreshBtn.parentNode.insertBefore(unselectAllBtn, refreshBtn);
-        refreshBtn.parentNode.insertBefore(deleteSelectedBtn, refreshBtn.nextSibling);
+        refreshBtn.parentNode.insertBefore(
+          deleteSelectedBtn,
+          refreshBtn.nextSibling
+        );
       } else {
         document.body.appendChild(selectAllBtn);
         document.body.appendChild(unselectAllBtn);
@@ -210,7 +230,10 @@ async function fetchDocuments(reset = false) {
 
     // ensure delete button visibility reflects current selections
     if (deleteSelectedBtn) {
-      deleteSelectedBtn.style.display = document.querySelectorAll(".doc-checkbox:checked").length > 0 ? "inline-block" : "none";
+      deleteSelectedBtn.style.display =
+        document.querySelectorAll(".doc-checkbox:checked").length > 0
+          ? "inline-block"
+          : "none";
     }
   } catch (err) {
     console.error("Error fetching documents:", err);
@@ -241,7 +264,9 @@ async function fetchDocuments(reset = false) {
 // }
 
 async function deleteSelectedDocuments() {
-  const checked = Array.from(document.querySelectorAll(".doc-checkbox:checked")).map(cb => cb.value);
+  const checked = Array.from(
+    document.querySelectorAll(".doc-checkbox:checked")
+  ).map((cb) => cb.value);
   if (checked.length === 0) return;
   if (!confirm(`Delete ${checked.length} selected document(s)?`)) return;
 
@@ -251,13 +276,18 @@ async function deleteSelectedDocuments() {
   try {
     // delete each in sequence or in parallel; use Promise.all for parallel deletes
     const deletePromises = checked.map((filename) =>
-      fetch(`https://chicory-lane.onrender.com/documents/${encodeURIComponent(filename)}`, { method: "DELETE" })
+      fetch(
+        `https://chicory-lane-iyf5.onrender.com/documents/${encodeURIComponent(
+          filename
+        )}`,
+        { method: "DELETE" }
+      )
         .then((res) => ({ filename, ok: res.ok, status: res.status }))
         .catch((err) => ({ filename, ok: false, error: err }))
     );
 
     const results = await Promise.all(deletePromises);
-    const failed = results.filter(r => !r.ok);
+    const failed = results.filter((r) => !r.ok);
 
     if (failed.length > 0) {
       console.error("Some deletes failed:", failed);

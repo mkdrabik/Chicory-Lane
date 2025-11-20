@@ -44,7 +44,7 @@ userInput.addEventListener("keypress", (e) => {
 
 async function getBotResponse(userText, format) {
   try {
-    const response = await fetch("https://chicory-lane.onrender.com/ask", {
+    const response = await fetch("https://chicory-lane-iyf5.onrender.com/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: userText, format }),
@@ -65,5 +65,3 @@ async function getBotResponse(userText, format) {
     return "Sorry, I could not get a response from the server.";
   }
 }
-
-
