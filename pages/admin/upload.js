@@ -29,10 +29,13 @@ form.addEventListener("submit", async (e) => {
   statusDiv.textContent = "Uploading...";
 
   try {
-    const response = await fetch("https://chicory-lane.onrender.com/upload", {
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(
+      "https://chicory-lane-iyf5.onrender.com/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     if (response.ok) {
       const result = await response.json();
@@ -66,10 +69,13 @@ submitTextBtn.addEventListener("click", async () => {
   statusDiv.textContent = "Submitting text...";
 
   try {
-    const response = await fetch("https://chicory-lane.onrender.com/upload", {
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(
+      "https://chicory-lane-iyf5.onrender.com/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     if (response.ok) {
       const result = await response.json();
@@ -90,6 +96,11 @@ const refreshBtn = document.getElementById("refresh-btn");
 const loadMoreBtn = document.getElementById("load-more-btn");
 const documentList = document.getElementById("document-list");
 
+// lazy buttons (will be created after documents load)
+let deleteSelectedBtn = null;
+let selectAllBtn = null;
+let unselectAllBtn = null;
+
 let offset = 0;
 const limit = 10;
 let totalDocs = 0;
@@ -102,7 +113,7 @@ async function fetchDocuments(reset = false) {
 
   try {
     const response = await fetch(
-      `https://chicory-lane.onrender.com/documents?limit=${limit}&offset=${offset}`
+      `https://chicory-lane-iyf5.onrender.com/documents?limit=${limit}&offset=${offset}`
     );
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -116,49 +127,183 @@ async function fetchDocuments(reset = false) {
     if (!documents || documents.length === 0) {
       if (reset) documentList.innerHTML = "<li>No documents uploaded yet.</li>";
       loadMoreBtn.style.display = "none";
+      if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
+      if (selectAllBtn) selectAllBtn.style.display = "none";
+      if (unselectAllBtn) unselectAllBtn.style.display = "none";
       return;
     }
 
     documents.forEach((doc) => {
       const li = document.createElement("li");
-      li.textContent = doc;
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.className = "delete-btn";
-      deleteBtn.onclick = () => deleteDocument(doc, li);
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "doc-checkbox";
+      checkbox.value = doc;
+      checkbox.id = `doc-${encodeURIComponent(doc)}`;
+      checkbox.addEventListener("change", () => {
+        const anyChecked =
+          document.querySelectorAll(".doc-checkbox:checked").length > 0;
+        if (deleteSelectedBtn)
+          deleteSelectedBtn.style.display = anyChecked
+            ? "inline-block"
+            : "none";
+      });
 
-      li.appendChild(deleteBtn);
+      const label = document.createElement("label");
+      label.htmlFor = checkbox.id;
+      label.textContent = doc;
+      label.style.marginLeft = "8px";
+
+      li.appendChild(checkbox);
+      li.appendChild(label);
+
       documentList.appendChild(li);
     });
 
+    // controls container fallback
+    const docControls =
+      document.getElementById("document-controls") ||
+      document.querySelector(".doc-controls") ||
+      (refreshBtn ? refreshBtn.parentNode : null);
+
+    // lazily create Select All / Unselect All / Delete Selected buttons once
+    if (!selectAllBtn && documents.length > 0) {
+      selectAllBtn = document.createElement("button");
+      selectAllBtn.id = "select-all-btn";
+      selectAllBtn.type = "button";
+      selectAllBtn.textContent = "Select All";
+      selectAllBtn.className = "btn";
+      selectAllBtn.style.display = "inline-block";
+      selectAllBtn.addEventListener("click", () => {
+        document
+          .querySelectorAll(".doc-checkbox")
+          .forEach((cb) => (cb.checked = true));
+        if (deleteSelectedBtn) deleteSelectedBtn.style.display = "inline-block";
+      });
+
+      unselectAllBtn = document.createElement("button");
+      unselectAllBtn.id = "unselect-all-btn";
+      unselectAllBtn.type = "button";
+      unselectAllBtn.textContent = "Unselect All";
+      unselectAllBtn.className = "btn";
+      unselectAllBtn.style.display = "inline-block";
+      unselectAllBtn.addEventListener("click", () => {
+        document
+          .querySelectorAll(".doc-checkbox")
+          .forEach((cb) => (cb.checked = false));
+        if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
+      });
+
+      // ensure deleteSelected exists (create it if not)
+      if (!deleteSelectedBtn) {
+        deleteSelectedBtn = document.createElement("button");
+        deleteSelectedBtn.id = "delete-selected-btn";
+        deleteSelectedBtn.type = "button";
+        deleteSelectedBtn.textContent = "Delete Selected";
+        deleteSelectedBtn.className = "delete-selected-btn delete-btn";
+        deleteSelectedBtn.style.display = "none";
+        deleteSelectedBtn.addEventListener("click", deleteSelectedDocuments);
+      }
+
+      if (docControls) {
+        // place select/unselect on the left of the secondary controls, delete on the right
+        docControls.prepend(unselectAllBtn);
+        docControls.prepend(selectAllBtn);
+        docControls.appendChild(deleteSelectedBtn);
+      } else if (refreshBtn && refreshBtn.parentNode) {
+        refreshBtn.parentNode.insertBefore(selectAllBtn, refreshBtn);
+        refreshBtn.parentNode.insertBefore(unselectAllBtn, refreshBtn);
+        refreshBtn.parentNode.insertBefore(
+          deleteSelectedBtn,
+          refreshBtn.nextSibling
+        );
+      } else {
+        document.body.appendChild(selectAllBtn);
+        document.body.appendChild(unselectAllBtn);
+        document.body.appendChild(deleteSelectedBtn);
+      }
+    }
+
     offset += limit;
     loadMoreBtn.style.display = offset < totalDocs ? "block" : "none";
+
+    // ensure delete button visibility reflects current selections
+    if (deleteSelectedBtn) {
+      deleteSelectedBtn.style.display =
+        document.querySelectorAll(".doc-checkbox:checked").length > 0
+          ? "inline-block"
+          : "none";
+    }
   } catch (err) {
     console.error("Error fetching documents:", err);
     documentList.innerHTML = "<li>Error fetching documents.</li>";
   }
 }
 
-async function deleteDocument(filename, liElement) {
-  if (!confirm(`Delete document "${filename}"?`)) return;
+// async function deleteDocument(filename, liElement) {
+//   if (!confirm(`Delete document "${filename}"?`)) return;
+
+//   try {
+//     const response = await fetch(
+//       `https://chicory-lane.onrender.com/documents/${encodeURIComponent(
+//         filename
+//       )}`,
+//       { method: "DELETE" }
+//     );
+
+//     if (response.ok) {
+//       liElement.remove();
+//     } else {
+//       alert("Failed to delete document.");
+//     }
+//   } catch (err) {
+//     console.error("Error deleting document:", err);
+//     alert("Error deleting document.");
+//   }
+// }
+
+async function deleteSelectedDocuments() {
+  const checked = Array.from(
+    document.querySelectorAll(".doc-checkbox:checked")
+  ).map((cb) => cb.value);
+  if (checked.length === 0) return;
+  if (!confirm(`Delete ${checked.length} selected document(s)?`)) return;
+
+  if (deleteSelectedBtn) deleteSelectedBtn.disabled = true;
+  statusDiv.textContent = "Deleting selected documents...";
 
   try {
-    const response = await fetch(
-      `https://chicory-lane.onrender.com/documents/${encodeURIComponent(
-        filename
-      )}`,
-      { method: "DELETE" }
+    // delete each in sequence or in parallel; use Promise.all for parallel deletes
+    const deletePromises = checked.map((filename) =>
+      fetch(
+        `https://chicory-lane-iyf5.onrender.com/documents/${encodeURIComponent(
+          filename
+        )}`,
+        { method: "DELETE" }
+      )
+        .then((res) => ({ filename, ok: res.ok, status: res.status }))
+        .catch((err) => ({ filename, ok: false, error: err }))
     );
 
-    if (response.ok) {
-      liElement.remove();
+    const results = await Promise.all(deletePromises);
+    const failed = results.filter((r) => !r.ok);
+
+    if (failed.length > 0) {
+      console.error("Some deletes failed:", failed);
+      statusDiv.textContent = `Failed to delete ${failed.length} document(s).`;
     } else {
-      alert("Failed to delete document.");
+      statusDiv.textContent = "Selected documents deleted.";
     }
+
+    // refresh the list to keep state simple
+    await fetchDocuments(true);
   } catch (err) {
-    console.error("Error deleting document:", err);
-    alert("Error deleting document.");
+    console.error("Error deleting selected documents:", err);
+    statusDiv.textContent = "Error deleting documents.";
+  } finally {
+    if (deleteSelectedBtn) deleteSelectedBtn.disabled = false;
+    if (deleteSelectedBtn) deleteSelectedBtn.style.display = "none";
   }
 }
 

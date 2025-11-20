@@ -41,10 +41,16 @@
 
       <div class="uploaded-documents">
         <h2>Your Uploaded Documents</h2>
-        <div class="doc-controls">
-          <button id="refresh-btn">Refresh</button>
-          <button id="load-more-btn">Load More</button>
+
+        <!-- top row: centered Refresh / Load more -->
+        <div class="doc-controls" id="top-doc-controls">
+          <button id="refresh-btn" class="btn">Refresh</button>
+          <button id="load-more-btn" class="btn">Load More</button>
         </div>
+
+        <!-- secondary row: select/unselect/delete will be inserted here by JS -->
+        <div class="doc-controls-secondary" id="document-controls"></div>
+
         <ul id="document-list"></ul>
       </div>
     </div>
