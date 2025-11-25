@@ -1,0 +1,17 @@
+name: Scheduled Ask API Call
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch: {} 
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call Render /ask endpoint
+        run: |
+          curl -X POST "https://chicory-lane-iyf5.onrender.com/ask" \
+            -H "Content-Type: application/json" \
+            -d '{"query": "What is a vernal pool", "format": "paragraph"}'
