@@ -105,6 +105,7 @@ let offset = 0;
 const limit = 10;
 let totalDocs = 0;
 
+//gets document names from backend
 async function fetchDocuments(reset = false) {
   if (reset) {
     offset = 0;
@@ -240,28 +241,6 @@ async function fetchDocuments(reset = false) {
     documentList.innerHTML = "<li>Error fetching documents.</li>";
   }
 }
-
-// async function deleteDocument(filename, liElement) {
-//   if (!confirm(`Delete document "${filename}"?`)) return;
-
-//   try {
-//     const response = await fetch(
-//       `https://chicory-lane.onrender.com/documents/${encodeURIComponent(
-//         filename
-//       )}`,
-//       { method: "DELETE" }
-//     );
-
-//     if (response.ok) {
-//       liElement.remove();
-//     } else {
-//       alert("Failed to delete document.");
-//     }
-//   } catch (err) {
-//     console.error("Error deleting document:", err);
-//     alert("Error deleting document.");
-//   }
-// }
 
 async function deleteSelectedDocuments() {
   const checked = Array.from(
