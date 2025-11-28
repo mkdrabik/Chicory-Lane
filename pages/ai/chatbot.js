@@ -42,6 +42,7 @@ userInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
+//call to backend for GPT + Qdrant response
 async function getBotResponse(userText, format) {
   try {
     const response = await fetch("https://chicory-lane-iyf5.onrender.com/ask", {
