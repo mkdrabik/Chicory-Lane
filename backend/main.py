@@ -1,29 +1,10 @@
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
-import secrets
 from api_calls import search_with_context, add_document, get_documents_paginated, delete_document
 
 app = FastAPI()
-
-# It is strongly recommended to use environment variables for credentials
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "your_strong_password"
-
-security = HTTPBasic()
-
-def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = secrets.compare_digest(credentials.username, ADMIN_USERNAME)
-    correct_password = secrets.compare_digest(credentials.password, ADMIN_PASSWORD)
-    if not (correct_username and correct_password):
-        raise HTTPException(
-            status_code=401,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return credentials.username
 
 origins = [
     "http://127.0.0.1:5500",
