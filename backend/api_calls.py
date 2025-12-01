@@ -5,6 +5,7 @@ from openai import OpenAI
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
+# Function to add a document's content to Qdrant with embeddings
 def add_document(content: str, filename: str):
     load_dotenv()
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -45,7 +46,7 @@ def add_document(content: str, filename: str):
             wait=True
         )
 
-
+# Function to search with context and return formatted answer
 def search_with_context(query: str, format: str) -> str:
     format_instruction = (
         "Respond in bullet points using Markdown `-` or `*`."
@@ -100,6 +101,7 @@ def search_with_context(query: str, format: str) -> str:
 
     return chat_response.choices[0].message.content
 
+# Function to get all unique document filenames
 def get_all_documents():
     """Fetch all unique document filenames stored in Qdrant."""
     load_dotenv()
@@ -125,6 +127,7 @@ def get_all_documents():
         print("❌ Error retrieving documents:", e)
         raise
 
+# Function to delete all points associated with a given filename
 def delete_document(filename: str):
     """Delete all points associated with a given filename."""
     import os
@@ -181,7 +184,7 @@ def delete_document(filename: str):
         raise
 
 
-    
+# Function to get paginated document filenames
 def get_documents_paginated(limit: int = 50, offset: int = 0):
     """Fetch paginated document filenames from Qdrant."""
     load_dotenv()

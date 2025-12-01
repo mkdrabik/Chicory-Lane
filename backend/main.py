@@ -26,19 +26,23 @@ class AskRequest(BaseModel):
     query: str
     format: str = "paragraph"
 
+#Endpoint to handle preflight OPTIONS request for /ask
 @app.options("/ask")
 def ask_preflight():
     return Response(status_code=204)
 
+#Endpoint to handle POST request for /ask
 @app.post("/ask")
 def ask(request: AskRequest):
     answer = search_with_context(request.query, request.format)
     return {"answer": answer}
 
+#Endpoint to handle preflight OPTIONS request for /upload
 @app.options("/upload")
 async def upload_preflight():
     return Response(status_code=204)
 
+#Endpoint to handle POST request for /upload
 @app.post("/upload")
 async def upload(
     file: UploadFile = File(...),
@@ -54,7 +58,7 @@ async def upload(
     
     return {"message": f"File '{name}' uploaded successfully"}
 
-
+#Endpoint to handle GET request for /documents
 @app.get("/documents")
 def list_documents(limit: int = 50, offset: int = 0):
     """Return paginated document list."""
@@ -64,6 +68,7 @@ def list_documents(limit: int = 50, offset: int = 0):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+#Endpoint to handle DELETE request for /documents/{filename}
 @app.delete("/documents/{filename}")
 def remove_document(filename: str):
     """Delete all vectors for a given document filename."""
