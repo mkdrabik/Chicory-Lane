@@ -43,66 +43,34 @@ async def upload_preflight():
     return Response(status_code=204)
 
 #Endpoint to handle POST request for /upload
-# @app.post("/upload")
-# async def upload(
-#     file: UploadFile = File(...),
-#     document_name: str = Form(None)
-# ):
-#     # Disallow PDF files
-#     if file.content_type == "application/pdf":
-#         raise HTTPException(400, detail="PDF files are not allowed.")
-
-#     # Allow any file with a .txt extension
-#     if file.filename.endswith(".txt"):
-#         pass
-#     # For other files, check if they are text-based
-#     elif not file.content_type.startswith("text/"):
-#         raise HTTPException(400, detail="Invalid file type. Only text files are allowed.")
-
-#     name = document_name or file.filename or "Untitled Document"
-    
-#     content = await file.read()
-    
-#     # Try to decode as utf-8
-#     try:
-#         content = content.decode("utf-8")
-#     except UnicodeDecodeError:
-#         raise HTTPException(400, detail="File is not a valid UTF-8 encoded text file.")
-
-#     add_document(content, name)
-    
-#     return {"message": f"File '{name}' uploaded successfully"}
-
-
 @app.post("/upload")
 async def upload(
     file: UploadFile = File(...),
     document_name: str = Form(None)
 ):
-    # Block PDFs
+    # Disallow PDF files
     if file.content_type == "application/pdf":
         raise HTTPException(400, detail="PDF files are not allowed.")
 
-    # Allow .txt files even if content-type is weird (Adobe)
-    allowed_types = {"text/plain", "application/octet-stream"}
-
-    if file.content_type not in allowed_types and not file.filename.endswith(".txt"):
-        raise HTTPException(400, detail="Only .txt text files are allowed.")
+    # Allow any file with a .txt extension
+    if file.filename.endswith(".txt"):
+        pass
+    # For other files, check if they are text-based
+    elif not file.content_type.startswith("text/"):
+        raise HTTPException(400, detail="Invalid file type. Only text files are allowed.")
 
     name = document_name or file.filename or "Untitled Document"
-    raw = await file.read()
-
-    # Try UTF-8, fallback to UTF-16 (Adobe Acrobat output)
+    
+    content = await file.read()
+    
+    # Try to decode as utf-8
     try:
-        content = raw.decode("utf-8")
+        content = content.decode("utf-8")
     except UnicodeDecodeError:
-        try:
-            content = raw.decode("utf-16")
-        except UnicodeDecodeError:
-            raise HTTPException(400, detail="File must be UTF-8 or UTF-16 encoded text.")
+        raise HTTPException(400, detail="File is not a valid UTF-8 encoded text file.")
 
     add_document(content, name)
-
+    
     return {"message": f"File '{name}' uploaded successfully"}
 
 
