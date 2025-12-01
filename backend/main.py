@@ -43,35 +43,72 @@ async def upload_preflight():
     return Response(status_code=204)
 
 #Endpoint to handle POST request for /upload
+# @app.post("/upload")
+# async def upload(
+#     file: UploadFile = File(...),
+#     document_name: str = Form(None)
+# ):
+#     # Disallow PDF files
+#     if file.content_type == "application/pdf":
+#         raise HTTPException(400, detail="PDF files are not allowed.")
+
+#     # Allow any file with a .txt extension
+#     if file.filename.endswith(".txt"):
+#         pass
+#     # For other files, check if they are text-based
+#     elif not file.content_type.startswith("text/"):
+#         raise HTTPException(400, detail="Invalid file type. Only text files are allowed.")
+
+#     name = document_name or file.filename or "Untitled Document"
+    
+#     content = await file.read()
+    
+#     # Try to decode as utf-8
+#     try:
+#         content = content.decode("utf-8")
+#     except UnicodeDecodeError:
+#         raise HTTPException(400, detail="File is not a valid UTF-8 encoded text file.")
+
+#     add_document(content, name)
+    
+#     return {"message": f"File '{name}' uploaded successfully"}
+
+
 @app.post("/upload")
 async def upload(
     file: UploadFile = File(...),
     document_name: str = Form(None)
 ):
-    # Disallow PDF files
-    if file.content_type == "application/pdf":
+    # Always reject actual PDFs
+    if file.content_type == "application/pdf" or file.filename.lower().endswith(".pdf"):
         raise HTTPException(400, detail="PDF files are not allowed.")
 
-    # Allow any file with a .txt extension
-    if file.filename.endswith(".txt"):
+    filename = file.filename.lower()
+
+    # If it ends with .txt, allow it NO MATTER the MIME TYPE
+    if filename.endswith(".txt"):
         pass
-    # For other files, check if they are text-based
-    elif not file.content_type.startswith("text/"):
-        raise HTTPException(400, detail="Invalid file type. Only text files are allowed.")
+    else:
+        # Otherwise only accept true text/* types
+        if not (file.content_type and file.content_type.startswith("text/")):
+            raise HTTPException(
+                400, 
+                detail=f"Invalid file type ({file.content_type}). Only .txt or text files allowed."
+            )
+
+    # Read and validate the content
+    content_bytes = await file.read()
+    try:
+        content = content_bytes.decode("utf-8")
+    except UnicodeDecodeError:
+        raise HTTPException(400, detail="File is not a valid UTF-8 text file.")
 
     name = document_name or file.filename or "Untitled Document"
-    
-    content = await file.read()
-    
-    # Try to decode as utf-8
-    try:
-        content = content.decode("utf-8")
-    except UnicodeDecodeError:
-        raise HTTPException(400, detail="File is not a valid UTF-8 encoded text file.")
 
     add_document(content, name)
-    
+
     return {"message": f"File '{name}' uploaded successfully"}
+
 
 #Endpoint to handle GET request for /documents
 @app.get("/documents")
