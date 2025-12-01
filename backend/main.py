@@ -46,7 +46,7 @@ async def upload_preflight():
 @app.post("/upload")
 async def upload(
     file: UploadFile = File(...),
-    document_name: str = Form(None),
+    document_name: str = Form(None)
 ):
     # Disallow PDF files
     if file.content_type == "application/pdf":
