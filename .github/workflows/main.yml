@@ -2,7 +2,7 @@ name: Keep Render Warm
 
 on:
   schedule:
-    - cron: "*/5 14-21 * * *"
+    - cron: "*/5 14-23 * * *"
 
   workflow_dispatch: 
 
@@ -12,6 +12,5 @@ jobs:
     steps:
       - name: Keep Render app awake
         run: |
-          curl -s -o /dev/null https://chicory-lane.onrender.com/
-          curl -s -o /dev/null https://chicory-lane.onrender.com/ask
-          curl -s -o /dev/null https://chicory-lane.onrender.com/documents
+          curl -s -o /dev/null https://chicory-lane-iyf5.onrender.com/
+
