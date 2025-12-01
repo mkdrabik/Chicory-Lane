@@ -3,6 +3,19 @@ const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 const loadingDiv = document.getElementById("loading");
 
+// auto-resize helper for the textarea
+function adjustInputHeight() {
+  if (!userInput) return;
+  userInput.style.height = "auto";
+  userInput.style.height = `${userInput.scrollHeight}px`;
+}
+
+if (userInput) {
+  adjustInputHeight();
+  userInput.addEventListener("input", adjustInputHeight);
+}
+
+//function to add message to chat
 function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
@@ -17,6 +30,7 @@ function addMessage(text, sender) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+//function to send message and get response
 async function sendMessage() {
   const text = userInput.value.trim();
   const format = document.getElementById("formatSelect").value;
@@ -36,15 +50,19 @@ async function sendMessage() {
   loadingDiv.textContent = "";
   loadingDiv.classList.remove("loading");
 }
-
+//button to call send message function
 sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessage();
+userInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 });
 
+//call to backend for GPT + Qdrant response
 async function getBotResponse(userText, format) {
   try {
-    const response = await fetch("https://chicory-lane.onrender.com/ask", {
+    const response = await fetch("https://chicory-lane-iyf5.onrender.com/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: userText, format }),
@@ -65,5 +83,3 @@ async function getBotResponse(userText, format) {
     return "Sorry, I could not get a response from the server.";
   }
 }
-
-
