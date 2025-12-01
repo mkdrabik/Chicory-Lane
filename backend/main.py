@@ -79,35 +79,32 @@ async def upload(
     file: UploadFile = File(...),
     document_name: str = Form(None)
 ):
-    # Always reject actual PDFs
-    if file.content_type == "application/pdf" or file.filename.lower().endswith(".pdf"):
+    # Block PDFs
+    if file.content_type == "application/pdf":
         raise HTTPException(400, detail="PDF files are not allowed.")
 
-    filename = file.filename.lower()
+    # Allow .txt files even if content-type is weird (Adobe)
+    allowed_types = {"text/plain", "application/octet-stream"}
 
-    # If it ends with .txt, allow it NO MATTER the MIME TYPE
-    if filename.endswith(".txt"):
-        pass
-    else:
-        # Otherwise only accept true text/* types
-        if not (file.content_type and file.content_type.startswith("text/")):
-            raise HTTPException(
-                400, 
-                detail=f"Invalid file type ({file.content_type}). Only .txt or text files allowed."
-            )
-
-    # Read and validate the content
-    content_bytes = await file.read()
-    try:
-        content = content_bytes.decode("utf-8")
-    except UnicodeDecodeError:
-        raise HTTPException(400, detail="File is not a valid UTF-8 text file.")
+    if file.content_type not in allowed_types and not file.filename.endswith(".txt"):
+        raise HTTPException(400, detail="Only .txt text files are allowed.")
 
     name = document_name or file.filename or "Untitled Document"
+    raw = await file.read()
+
+    # Try UTF-8, fallback to UTF-16 (Adobe Acrobat output)
+    try:
+        content = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        try:
+            content = raw.decode("utf-16")
+        except UnicodeDecodeError:
+            raise HTTPException(400, detail="File must be UTF-8 or UTF-16 encoded text.")
 
     add_document(content, name)
 
     return {"message": f"File '{name}' uploaded successfully"}
+
 
 
 #Endpoint to handle GET request for /documents
