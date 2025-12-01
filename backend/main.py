@@ -47,7 +47,6 @@ async def upload_preflight():
 async def upload(
     file: UploadFile = File(...),
     document_name: str = Form(None),
-    username: str = Depends(get_current_username)
 ):
     # Disallow PDF files
     if file.content_type == "application/pdf":
