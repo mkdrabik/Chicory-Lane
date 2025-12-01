@@ -15,6 +15,7 @@ if (userInput) {
   userInput.addEventListener("input", adjustInputHeight);
 }
 
+//function to add message to chat
 function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
@@ -29,6 +30,7 @@ function addMessage(text, sender) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+//function to send message and get response
 async function sendMessage() {
   const text = userInput.value.trim();
   const format = document.getElementById("formatSelect").value;
@@ -48,9 +50,8 @@ async function sendMessage() {
   loadingDiv.textContent = "";
   loadingDiv.classList.remove("loading");
 }
-
+//button to call send message function
 sendBtn.addEventListener("click", sendMessage);
-// use keydown so we can detect Shift+Enter for newline; Enter sends
 userInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();

@@ -6,6 +6,7 @@ const textInput = document.getElementById("text-input");
 const textNameInput = document.getElementById("text-name");
 const submitTextBtn = document.getElementById("submit-text-btn");
 
+//handles file upload form submission
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -52,6 +53,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+//handles text submission
 submitTextBtn.addEventListener("click", async () => {
   const text = textInput.value.trim();
   const docName = textNameInput.value.trim();
