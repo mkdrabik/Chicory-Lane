@@ -3,6 +3,18 @@ const userInput = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 const loadingDiv = document.getElementById("loading");
 
+// auto-resize helper for the textarea
+function adjustInputHeight() {
+  if (!userInput) return;
+  userInput.style.height = "auto";
+  userInput.style.height = `${userInput.scrollHeight}px`;
+}
+
+if (userInput) {
+  adjustInputHeight();
+  userInput.addEventListener("input", adjustInputHeight);
+}
+
 function addMessage(text, sender) {
   const msg = document.createElement("div");
   msg.classList.add("message", sender);
@@ -38,8 +50,12 @@ async function sendMessage() {
 }
 
 sendBtn.addEventListener("click", sendMessage);
-userInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessage();
+// use keydown so we can detect Shift+Enter for newline; Enter sends
+userInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 });
 
 async function getBotResponse(userText, format) {

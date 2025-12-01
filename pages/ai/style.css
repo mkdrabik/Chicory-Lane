@@ -96,6 +96,8 @@ h3 {
 .input-container {
   display: flex;
   border-top: 1px solid #ddd;
+  align-items: stretch; /* allow button to match textarea height */
+  gap: 8px;
 }
 
 .input-container input {
@@ -107,6 +109,25 @@ h3 {
   font-family: 'Times New Roman';
 }
 
+.input-container textarea {
+  flex: 1;                    /* take remaining width */
+  padding: 10px;
+  border: none;               /* remove border */
+  outline: none;
+  font-size: 16px;            /* same size as other inputs */
+  font-family: 'Times New Roman';
+  resize: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.input-container textarea::placeholder {
+  font-family: 'Times New Roman';
+  color: inherit;
+  opacity: 0.7;
+}
+
 .input-container button {
   padding: 10px 20px;
   border: none;
@@ -115,6 +136,7 @@ h3 {
   cursor: pointer;
   font-size: 16px;
   font-family: 'Times New Roman';
+  align-self: stretch; /* fill container height to visually match textarea */
 }
 
 .input-container button:hover {
@@ -187,7 +209,7 @@ h3 {
 .doc-controls {
   display: flex;
   gap: 8px;
-  justify-content: center;    /* centered */
+  justify-content: center;
   align-items: center;
   margin-top: 8px;
 }
