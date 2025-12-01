@@ -17,8 +17,8 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  if (file.type !== "text/plain") {
-    statusDiv.textContent = "Please select a plain text file (.txt).";
+  if (!file.name.endsWith(".txt") && !file.type.startsWith("text/")) {
+    statusDiv.textContent = "Please select a text file.";
     return;
   }
 

@@ -1,10 +1,11 @@
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
-=======
->>>>>>> origin/main
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
+import secrets
+from api_calls import search_with_context, add_document, get_documents_paginated, delete_document
+
 app = FastAPI()
 
 # It is strongly recommended to use environment variables for credentials
@@ -59,20 +60,31 @@ async def upload_preflight():
 @app.post("/upload")
 async def upload(
     file: UploadFile = File(...),
-<<<<<<< HEAD
     document_name: str = Form(None),
     username: str = Depends(get_current_username)
-=======
-    document_name: str = Form(None) 
->>>>>>> origin/main
 ):
-    if file.content_type != "text/plain":
-        raise HTTPException(400, detail="Invalid file type. Only .txt files are allowed.")
-    
+    # Disallow PDF files
+    if file.content_type == "application/pdf":
+        raise HTTPException(400, detail="PDF files are not allowed.")
+
+    # Allow any file with a .txt extension
+    if file.filename.endswith(".txt"):
+        pass
+    # For other files, check if they are text-based
+    elif not file.content_type.startswith("text/"):
+        raise HTTPException(400, detail="Invalid file type. Only text files are allowed.")
+
     name = document_name or file.filename or "Untitled Document"
     
     content = await file.read()
-    add_document(content.decode("utf-8"), name)
+    
+    # Try to decode as utf-8
+    try:
+        content = content.decode("utf-8")
+    except UnicodeDecodeError:
+        raise HTTPException(400, detail="File is not a valid UTF-8 encoded text file.")
+
+    add_document(content, name)
     
     return {"message": f"File '{name}' uploaded successfully"}
 
