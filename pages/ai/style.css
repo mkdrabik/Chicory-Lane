@@ -1,8 +1,8 @@
 /* Base page styling matches overarching site */
 body {
-  background-color: #EDF0FF;
+  background-color: #edf0ff;
   color: #333366;
-  font-family: 'Times New Roman';
+  font-family: "Times New Roman";
   font-size: large;
   margin: 0;
   display: flex;
@@ -26,7 +26,7 @@ h3 {
 /* Horizontal menu (copied from site CSS for consistency) */
 .menuHorizontal {
   width: 100%;
-  background-color: #AABBFF;
+  background-color: #aabbff;
   margin: -8px 0 10px 0;
 }
 .menuHorizontal ul {
@@ -36,7 +36,7 @@ h3 {
 .menuHorizontal ul li {
   display: inline-block;
   color: #000088;
-  background-color: #AABBFF;
+  background-color: #aabbff;
   font-weight: bold;
   padding: 8px 15px;
 }
@@ -54,9 +54,9 @@ h3 {
 /* Chatbot container */
 .chat-container {
   width: 60%;
-  max-width: 600px;
+  max-width: 1000px;
   background: white;
-  border: 2px solid #AABBFF;
+  border: 2px solid #aabbff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -77,7 +77,7 @@ h3 {
   padding: 8px 12px;
   border-radius: 12px;
   max-width: 75%;
-  font-family: 'Times New Roman';
+  font-family: "Times New Roman";
   line-height: 1.4;
 }
 
@@ -106,16 +106,16 @@ h3 {
   border: none;
   outline: none;
   font-size: 16px;
-  font-family: 'Times New Roman';
+  font-family: "Times New Roman";
 }
 
 .input-container textarea {
-  flex: 1;                    /* take remaining width */
+  flex: 1; /* take remaining width */
   padding: 10px;
-  border: none;               /* remove border */
+  border: none; /* remove border */
   outline: none;
-  font-size: 16px;            /* same size as other inputs */
-  font-family: 'Times New Roman';
+  font-size: 16px; /* same size as other inputs */
+  font-family: "Times New Roman";
   resize: none;
   overflow: hidden;
   box-sizing: border-box;
@@ -123,7 +123,7 @@ h3 {
 }
 
 .input-container textarea::placeholder {
-  font-family: 'Times New Roman';
+  font-family: "Times New Roman";
   color: inherit;
   opacity: 0.7;
 }
@@ -135,7 +135,7 @@ h3 {
   color: white;
   cursor: pointer;
   font-size: 16px;
-  font-family: 'Times New Roman';
+  font-family: "Times New Roman";
   align-self: stretch; /* fill container height to visually match textarea */
 }
 
@@ -163,7 +163,8 @@ h3 {
   overflow-x: auto;
 }
 
-.message.bot ul, .message.bot ol {
+.message.bot ul,
+.message.bot ol {
   margin: 0;
   padding-left: 20px;
 }
@@ -181,10 +182,20 @@ h3 {
 }
 
 @keyframes dots {
-  0%, 20% { content: ""; }
-  40% { content: "."; }
-  60% { content: ".."; }
-  80%, 100% { content: "..."; }
+  0%,
+  20% {
+    content: "";
+  }
+  40% {
+    content: ".";
+  }
+  60% {
+    content: "..";
+  }
+  80%,
+  100% {
+    content: "...";
+  }
 }
 
 /* upload page styling */
@@ -247,7 +258,7 @@ h3 {
 #file-name,
 #text-name {
   display: block;
-  max-width: 380px;      /* a bit bigger than the placeholder text */
+  max-width: 380px; /* a bit bigger than the placeholder text */
   width: 100%;
   margin: 6px auto 10px; /* centered horizontally */
   padding: 8px 10px;
@@ -255,7 +266,7 @@ h3 {
   border: 1px solid #e6e6e6;
   background: #fff;
   box-sizing: border-box;
-  font-family: 'Times New Roman';
+  font-family: "Times New Roman";
 }
 
 /* Make textarea look like the name boxes and sit inline with the submit button */
@@ -271,12 +282,12 @@ h3 {
   background: #fff;
   box-sizing: border-box;
   resize: vertical;
-  font-family: inherit;   /* make textarea use the same font as other inputs */
+  font-family: inherit; /* make textarea use the same font as other inputs */
   font-size: 14px;
   color: inherit;
   #text-input::placeholder {
-    font-family: inherit;   /* ensure placeholder matches */
-    color: #94a3b8;         /* adjust to match other placeholders if needed */
+    font-family: inherit; /* ensure placeholder matches */
+    color: #94a3b8; /* adjust to match other placeholders if needed */
     opacity: 1;
   }
 }
@@ -297,9 +308,22 @@ h3 {
 
 /* Responsive: stack on small screens */
 @media (max-width: 640px) {
-  #text-input { display: block; width: 100%; max-width: 520px; }
-  #submit-text-btn { display: block; width: 100%; margin-left: 0; margin-top: 8px; height: auto; }
-  .text-upload { flex-direction: column; align-items: stretch; }
+  #text-input {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+  }
+  #submit-text-btn {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+    height: auto;
+  }
+  .text-upload {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 /* List layout: no bullets, checkbox left, label right */
@@ -334,12 +358,13 @@ ul#document-list li label {
   cursor: pointer;
   padding: 6px 8px;
   border-radius: 6px;
-  transition: background .05s ease, color .05s ease, font-weight .05s ease, transform .05s ease;
+  transition: background 0.05s ease, color 0.05s ease, font-weight 0.05s ease,
+    transform 0.05s ease;
 }
 
 /* hover affordance for labels */
 ul#document-list li label:hover {
-  background: rgba(0,0,0,0.03);
+  background: rgba(0, 0, 0, 0.03);
   transform: translateY(-1px);
 }
 
