@@ -1,4 +1,4 @@
-#Chicory Lane
+# Chicory Lane
 
 1. Clone the repository and obtain proper API keys.
 2. Install VSCode and install the extension for live server preview.
