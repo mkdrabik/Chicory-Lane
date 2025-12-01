@@ -5,15 +5,6 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
 load_dotenv()
-# client = OpenAI(api_key=os.environ["OPENAI_API_KEY2"])
-
-# response = client.responses.create(
-#     model="gpt-4.1-mini",
-#     input="Write a one-sentence bedtime story about a unicorn."
-# )
-
-# print(response.output_text)
-
 # # 🔑 Clients
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 qdrant = QdrantClient(
@@ -21,7 +12,11 @@ qdrant = QdrantClient(
     api_key=os.environ["QDRANT_API_KEY"]
 )
 
-COLLECTION_NAME = "documents"
+# qdrant = QdrantClient(
+#     url=os.environ["JOHN_URL"],
+#     api_key=os.environ["JOHN_API_KEY"]
+# )
+
 COLLECTION_NAME2 = "chicorylane"
 
 # 1️⃣ Create Qdrant collection (only once)
@@ -32,7 +27,7 @@ COLLECTION_NAME2 = "chicorylane"
 
 # 2️⃣ Ingest sample documents
 # docs = [
-#     {"id": "1", "text": "Qdrant is an open-source vector database designed to handle large-scale vector embeddings for machine learning applications."},
+#     {"id": 1, "text": "Qdrant is an open-source vector database designed to handle large-scale vector embeddings for machine learning applications."},
 # ]
 
 # vectors, payloads, ids = [], [], []
@@ -51,31 +46,70 @@ COLLECTION_NAME2 = "chicorylane"
 #     points=models.Batch(ids=ids, vectors=vectors, payloads=payloads)
 # )
 
-# print("✅ Documents inserted into Qdrant")
 
-# # 3️⃣ Query flow
-query = "What are vernal pools?"
+
+
+# query = "What are vernal pools?"
+# # # 3️⃣ Retrieve Context Based on Query
+# #Pulling information from Qdrant based on user query for query augmentation
+# query_emb = client.embeddings.create(
+#     model="text-embedding-3-small",
+#     input=query
+# ).data[0].embedding
+
+# search_result = qdrant.query_points(
+#     collection_name=COLLECTION_NAME2,
+#     query=query_emb,
+#     limit=3
+# )
+
+# context = "\n".join([hit.payload["text"] for hit in search_result if hit.payload and "text" in hit.payload])
+# print("🔍 Retrieved context:\n", context)
+
+# # 4️⃣ Ask ChatGPT given context of model
+# # augmentation step, can edit call to GPT as needed if you want more or less context 
+# chat_response = client.chat.completions.create(
+#     model="gpt-4.1-mini",
+#     messages=[
+#         {"role": "system", "content": "You are a helpful assistant. Use the provided context to answer."},
+#         {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+#     ]
+# )
+
+# print("\n💡 ChatGPT Answer:\n", chat_response.choices[0].message.content)
+# 1️⃣ Embed the user query
+query = "Why is land a commodity?"
 query_emb = client.embeddings.create(
     model="text-embedding-3-small",
     input=query
 ).data[0].embedding
 
-search_result = qdrant.search(
+# 2️⃣ Retrieve relevant points from Qdrant (v2 syntax)
+search_result = qdrant.query_points(
     collection_name=COLLECTION_NAME2,
-    query_vector=query_emb,
+    query=query_emb,
     limit=3
 )
 
-context = "\n".join([hit.payload["text"] for hit in search_result if hit.payload and "text" in hit.payload])
+# 3️⃣ Extract context text properly from Qdrant v2 output
+context_chunks = []
+for point in search_result.points:
+    payload = point.payload or {}
+    if "text" in payload:
+        context_chunks.append(payload["text"])
+
+context = "\n".join(context_chunks)
 print("🔍 Retrieved context:\n", context)
 
-# 4️⃣ Ask ChatGPT with context
+# 4️⃣ Ask OpenAI using provided context
 chat_response = client.chat.completions.create(
-    model="gpt-4.1-mini",  # cheaper + fast, use gpt-4.1 for higher quality
+    model="gpt-4.1-mini",
     messages=[
-        {"role": "system", "content": "You are a helpful assistant. Use the provided context to answer."},
+        {"role": "system", "content": "You are a helpful assistant. Use the provided context to answer the user's query."},
         {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
     ]
 )
 
-print("\n💡 ChatGPT Answer:\n", chat_response.choices[0].message.content)
+answer = chat_response.choices[0].message.content
+
+print("\n💡 ChatGPT Answer:\n", answer)

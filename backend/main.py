@@ -1,13 +1,10 @@
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
+=======
+>>>>>>> origin/main
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
-import secrets
-
-from api_calls import (add_document, delete_document,
-                       get_documents_paginated, search_with_context)
-
 app = FastAPI()
 
 # It is strongly recommended to use environment variables for credentials
@@ -62,8 +59,12 @@ async def upload_preflight():
 @app.post("/upload")
 async def upload(
     file: UploadFile = File(...),
+<<<<<<< HEAD
     document_name: str = Form(None),
     username: str = Depends(get_current_username)
+=======
+    document_name: str = Form(None) 
+>>>>>>> origin/main
 ):
     if file.content_type != "text/plain":
         raise HTTPException(400, detail="Invalid file type. Only .txt files are allowed.")
@@ -96,4 +97,4 @@ def remove_document(filename: str):
 
 @app.get("/")
 def root():
-    return {"hello": "world"}
+   return {"hello": "world"}

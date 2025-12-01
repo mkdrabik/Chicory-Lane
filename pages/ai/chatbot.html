@@ -7,7 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </head>
   <body>
-    <!-- Top Menu (optional, matches site) -->
     <div class="menuHorizontal">
       <ul>
         <li><a href="../../index.html">Home</a></li>
@@ -24,9 +23,15 @@
 
     <div class="chat-container">
       <div class="messages" id="messages"></div>
-
-      <!-- 👇 Added loading div here -->
       <div id="loading" class="loading"></div>
+
+      <div style="padding: 8px;">
+        <label>Response format:</label>
+        <select id="formatSelect">
+          <option value="paragraph">Paragraph</option>
+          <option value="points">Bullet Points</option>
+        </select>
+      </div>
 
       <div class="input-container">
         <input type="text" id="userInput" placeholder="Type your message here..." />
